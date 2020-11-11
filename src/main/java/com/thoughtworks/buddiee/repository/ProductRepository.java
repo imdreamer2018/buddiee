@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Repository
@@ -25,5 +26,13 @@ public class ProductRepository {
     public Long save(Product product) {
         productMap.put(incrementProductId(), product);
         return maxProductId.get();
+    }
+
+    public Optional<Product> findById(Long id) {
+        return Optional.ofNullable(productMap.get(id));
+    }
+
+    public void deleteById(Long id) {
+        productMap.remove(id);
     }
 }
