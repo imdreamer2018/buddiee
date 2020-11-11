@@ -81,4 +81,30 @@ public class ProductServiceTest {
         }
     }
 
+    @Nested
+    class FindProduct {
+
+        @Nested
+        class WhenProductIdIsExisted {
+
+            @Test
+            void should_return_product_info() {
+                when(productRepository.findById(1L)).thenReturn(Optional.of(product));
+                Product product = productService.findProduct(1L);
+                assertEquals("mock product name", product.getName());
+            }
+        }
+
+        @Nested
+        class WhenProductIdIsNotExisted {
+
+            @Test
+            void should_throw_bad_request_exception() {
+                when(productRepository.findById(1L)).thenReturn(Optional.empty());
+                BadRequestException exception = assertThrows(BadRequestException.class, () -> productService.findProduct(1L));
+                assertEquals("can not find basic info of product with id is " + 1L, exception.getMessage());
+            }
+        }
+    }
+
 }

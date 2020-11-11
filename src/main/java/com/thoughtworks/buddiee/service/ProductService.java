@@ -25,4 +25,9 @@ public class ProductService {
                 .orElseThrow(() -> new BadRequestException("can not find basic info of product with id is " + productId));
         productRepository.deleteById(product.getId());
     }
+
+    public Product findProduct(Long productId) {
+        return productRepository.findById(productId)
+                .orElseThrow(() -> new BadRequestException("can not find basic info of product with id is " + productId));
+    }
 }
