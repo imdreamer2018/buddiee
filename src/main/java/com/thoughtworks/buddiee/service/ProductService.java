@@ -21,8 +21,8 @@ public class ProductService {
     }
 
     public void deleteProduct(Long productId) {
-        productRepository.findById(productId)
+        Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new BadRequestException("can not find basic info of product with id is " + productId));
-        productRepository.deleteById(productId);
+        productRepository.deleteById(product.getId());
     }
 }
