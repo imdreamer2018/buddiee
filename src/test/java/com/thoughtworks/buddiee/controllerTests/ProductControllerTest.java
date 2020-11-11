@@ -19,8 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -98,6 +97,35 @@ public class ProductControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                         .andExpect(status().isBadRequest());
                 verify(productService, times(1)).deleteProduct(1L);
+            }
+        }
+    }
+
+    @Nested
+    class FindProduct {
+
+        @Nested
+        class WhenProductIdIsExisted {
+
+            @Test
+            void should_return_product_info() throws Exception {
+                mockMvc.perform(get("/products/1")
+                        .contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(status().isOk());
+                verify(productService, times(1)).findProduct(1L);
+            }
+        }
+
+        @Nested
+        class WhenProductIdIsNotExisted {
+
+            @Test
+            void should_throw_bad_request_exception() throws Exception {
+                doThrow(BadRequestException.class).when(productService).findProduct(anyLong());
+                mockMvc.perform(get("/products/1")
+                        .contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(status().isBadRequest());
+                verify(productService, times(1)).findProduct(1L);
             }
         }
     }

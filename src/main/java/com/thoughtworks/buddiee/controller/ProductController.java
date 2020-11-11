@@ -26,4 +26,9 @@ public class ProductController {
     public void deleteProduct(@PathVariable(name = "id") Long productId) {
         productService.deleteProduct(productId);
     }
+
+    @GetMapping("/{id}")
+    public Product findProduct(@PathVariable(name = "id") Long productId) {
+        return productService.findProduct(productId);
+    }
 }
