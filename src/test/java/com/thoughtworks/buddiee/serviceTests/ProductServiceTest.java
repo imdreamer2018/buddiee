@@ -73,7 +73,7 @@ public class ProductServiceTest {
         class WhenProductIdIsNotExisted {
 
             @Test
-            void should_throw_exception() {
+            void should_throw_bad_request_exception() {
                 when(productRepository.findById(1L)).thenReturn(Optional.empty());
                 BadRequestException exception = assertThrows(BadRequestException.class, () -> productService.deleteProduct(1L));
                 assertEquals("can not find basic info of product with id is " + 1L, exception.getMessage());
