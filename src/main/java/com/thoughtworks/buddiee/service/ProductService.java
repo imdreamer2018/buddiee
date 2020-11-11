@@ -18,4 +18,8 @@ public class ProductService {
         product.setId(productId);
         return product;
     }
+
+    public void deleteProduct(Long productId) {
+        productRepository.deleteById(productId);
+    }
 }

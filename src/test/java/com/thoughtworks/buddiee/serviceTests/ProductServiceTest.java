@@ -10,7 +10,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 @ExtendWith(MockitoExtension.class)
@@ -45,6 +49,20 @@ public class ProductServiceTest {
             void should_return_product_info() {
                 Product productResponse = productService.createProduct(product);
                 assertEquals("mock product name", productResponse.getName());
+            }
+        }
+    }
+
+    @Nested
+    class DeleteProduct {
+
+        @Nested
+        class WhenProductIdIsExisted {
+
+            @Test
+            void should_delete_success() {
+                productService.deleteProduct(product.getId());
+                verify(productRepository).deleteById(product.getId());
             }
         }
     }
