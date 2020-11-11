@@ -12,21 +12,18 @@ public class ProductRepository {
 
     private final Map<Long, Product> productMap = new HashMap<>();
 
-    private final AtomicLong maxProductId = new AtomicLong(1L);
+    private final AtomicLong maxProductId = new AtomicLong(0L);
 
-    public Long getMaxProductId() {
-        return maxProductId.get();
-    }
-
-    public void incrementProductId() {
-        maxProductId.incrementAndGet();
+    public Long incrementProductId() {
+        return maxProductId.incrementAndGet();
     }
 
     public void deleteAll() {
         productMap.clear();
     }
 
-    public void save(Product product) {
-        productMap.put(maxProductId.get(), product);
+    public Long save(Product product) {
+        productMap.put(incrementProductId(), product);
+        return maxProductId.get();
     }
 }
