@@ -1,6 +1,7 @@
 package com.thoughtworks.buddiee.serviceTests;
 
 import com.thoughtworks.buddiee.dto.Product;
+import com.thoughtworks.buddiee.exception.BadRequestException;
 import com.thoughtworks.buddiee.repository.ProductRepository;
 import com.thoughtworks.buddiee.service.ProductService;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -61,8 +63,20 @@ public class ProductServiceTest {
 
             @Test
             void should_delete_success() {
-                productService.deleteProduct(product.getId());
-                verify(productRepository).deleteById(product.getId());
+                when(productRepository.findById(1L)).thenReturn(Optional.of(product));
+                productService.deleteProduct(1L);
+                verify(productRepository).deleteById(1L);
+            }
+        }
+
+        @Nested
+        class WhenProductIdIsNotExisted {
+
+            @Test
+            void should_throw_exception() {
+                when(productRepository.findById(1L)).thenReturn(Optional.empty());
+                BadRequestException exception = assertThrows(BadRequestException.class, () -> productService.deleteProduct(1L));
+                assertEquals("can not find basic info of product with id is " + 1L, exception.getMessage());
             }
         }
     }
