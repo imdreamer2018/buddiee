@@ -2,6 +2,7 @@ package com.thoughtworks.buddiee.controllerTests;
 
 import com.thoughtworks.buddiee.controller.ProductController;
 import com.thoughtworks.buddiee.dto.Product;
+import com.thoughtworks.buddiee.exception.BadRequestException;
 import com.thoughtworks.buddiee.service.ProductService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,9 +18,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -68,6 +69,35 @@ public class ProductControllerTest {
                         .andExpect(status().isCreated())
                         .andExpect(jsonPath("$.name", is("mock product name")));
                 verify(productService).createProduct(product);
+            }
+        }
+    }
+
+    @Nested
+    class DeleteProduct {
+
+        @Nested
+        class WhenProductIdIsExisted {
+
+            @Test
+            void should_delete_success() throws Exception {
+                mockMvc.perform(delete("/products/1")
+                        .contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(status().isNoContent());
+                verify(productService, times(1)).deleteProduct(1L);
+            }
+        }
+
+        @Nested
+        class WhenProductIdIsNotExisted {
+
+            @Test
+            void should_throw_bad_request_exception() throws Exception {
+                doThrow(BadRequestException.class).when(productService).deleteProduct(anyLong());
+                mockMvc.perform(delete("/products/1")
+                        .contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(status().isBadRequest());
+                verify(productService, times(1)).deleteProduct(1L);
             }
         }
     }
