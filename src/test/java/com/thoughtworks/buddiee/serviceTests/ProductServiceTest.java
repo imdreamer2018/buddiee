@@ -15,6 +15,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -102,6 +103,32 @@ public class ProductServiceTest {
             void should_throw_bad_request_exception() {
                 when(productRepository.findById(1L)).thenReturn(Optional.empty());
                 BadRequestException exception = assertThrows(BadRequestException.class, () -> productService.findProduct(1L));
+                assertEquals("can not find basic info of product with id is " + 1L, exception.getMessage());
+            }
+        }
+    }
+
+    @Nested
+    class UpdateProduct {
+
+        @Nested
+        class WhenProductIdIsExisted {
+
+            @Test
+            void should_return_product_info() {
+                when(productRepository.findById(1L)).thenReturn(Optional.of(product));
+                Product updateProduct = productService.updateProduct(1L, product);
+                assertEquals("mock product name", updateProduct.getName());
+            }
+        }
+
+        @Nested
+        class WhenProductIdIsNotExisted {
+
+            @Test
+            void should_throw_bad_request_exception() {
+                when(productRepository.findById(1L)).thenReturn(Optional.empty());
+                BadRequestException exception = assertThrows(BadRequestException.class, () -> productService.updateProduct(1L, product));
                 assertEquals("can not find basic info of product with id is " + 1L, exception.getMessage());
             }
         }

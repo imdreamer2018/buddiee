@@ -30,4 +30,12 @@ public class ProductService {
         return productRepository.findById(productId)
                 .orElseThrow(() -> new BadRequestException("can not find basic info of product with id is " + productId));
     }
+
+    public Product updateProduct(Long productId, Product updateProduct) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new BadRequestException("can not find basic info of product with id is " + productId));
+        updateProduct.setId(product.getId());
+        productRepository.save(updateProduct);
+        return updateProduct;
+    }
 }
