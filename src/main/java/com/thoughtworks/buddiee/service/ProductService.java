@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class ProductService {
 
+    public static final String CAN_NOT_FIND_BASIC_INFO_OF_PRODUCT_WITH_ID_IS = "can not find basic info of product with id is ";
     private final ProductRepository productRepository;
 
     public ProductService(ProductRepository productRepository) {
@@ -22,18 +23,18 @@ public class ProductService {
 
     public void deleteProduct(Long productId) {
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new BadRequestException("can not find basic info of product with id is " + productId));
+                .orElseThrow(() -> new BadRequestException(CAN_NOT_FIND_BASIC_INFO_OF_PRODUCT_WITH_ID_IS + productId));
         productRepository.deleteById(product.getId());
     }
 
     public Product findProduct(Long productId) {
         return productRepository.findById(productId)
-                .orElseThrow(() -> new BadRequestException("can not find basic info of product with id is " + productId));
+                .orElseThrow(() -> new BadRequestException(CAN_NOT_FIND_BASIC_INFO_OF_PRODUCT_WITH_ID_IS + productId));
     }
 
     public Product updateProduct(Long productId, Product updateProduct) {
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new BadRequestException("can not find basic info of product with id is " + productId));
+                .orElseThrow(() -> new BadRequestException(CAN_NOT_FIND_BASIC_INFO_OF_PRODUCT_WITH_ID_IS + productId));
         updateProduct.setId(product.getId());
         productRepository.save(updateProduct);
         return updateProduct;
