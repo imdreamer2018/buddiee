@@ -129,4 +129,35 @@ public class ProductControllerTest {
             }
         }
     }
+
+    @Nested
+    class UpdateProduct {
+
+        @Nested
+        class WhenProductIdIsExisted {
+
+            @Test
+            void should_return_product_info() throws Exception {
+                mockMvc.perform(put("/products/1")
+                        .content(productJson.write(product).getJson())
+                        .contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(status().isOk());
+                verify(productService, times(1)).updateProduct(1L, product);
+            }
+        }
+
+        @Nested
+        class WhenProductIdIsNotExisted {
+
+            @Test
+            void should_throw_bad_request_exception() throws Exception {
+                doThrow(BadRequestException.class).when(productService).updateProduct(anyLong(), any(Product.class));
+                mockMvc.perform(put("/products/1")
+                        .content(productJson.write(product).getJson())
+                        .contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(status().isBadRequest());
+                verify(productService, times(1)).updateProduct(1L, product);
+            }
+        }
+    }
 }
