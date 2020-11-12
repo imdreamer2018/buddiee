@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 @RestController
@@ -41,7 +41,7 @@ public class ProductController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteProduct(
             @NotNull(message = "product id can not be null")
-            @DecimalMin(value = "1", message = "product id muse be number and greater than 1")
+            @Min(value = 1, message = "product id muse be number and greater than 1")
             @PathVariable(name = "id") Long productId) {
         productService.deleteProduct(productId);
     }
@@ -49,7 +49,7 @@ public class ProductController {
     @GetMapping("/{id}")
     public Product findProduct(
             @NotNull(message = "product id can not be null")
-            @DecimalMin(value = "1", message = "product id muse be number and greater than 1")
+            @Min(value = 1, message = "product id muse be number and greater than 1")
             @PathVariable(name = "id") Long productId) {
         return productService.findProduct(productId);
     }
@@ -57,15 +57,18 @@ public class ProductController {
     @PutMapping("/{id}")
     public Product updateProduct(
             @NotNull(message = "product id can not be null")
-            @DecimalMin(value = "1", message = "product id muse be number and greater than 1")
+            @Min(value = 1, message = "product id muse be number and greater than 1")
             @PathVariable(name = "id") Long productId,
             @RequestBody @Valid Product updateProduct) {
         return productService.updateProduct(productId, updateProduct);
     }
 
     @GetMapping
-    public Page<Product> findProducts(@RequestParam(required = false, defaultValue = "1") int pageNumber,
-                                      @RequestParam(required = false, defaultValue = "10") int pageSize) {
+    public Page<Product> findProducts(
+            @Min(value = 1, message = "product id muse be number and greater than 1")
+            @RequestParam(required = false, defaultValue = "1") int pageNumber,
+            @Min(value = 1, message = "product id muse be number and greater than 1")
+            @RequestParam(required = false, defaultValue = "10") int pageSize) {
         return productService.findProducts(pageNumber, pageSize);
     }
 }
