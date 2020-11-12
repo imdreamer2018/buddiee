@@ -2,7 +2,7 @@ package com.thoughtworks.buddiee.service;
 
 import com.thoughtworks.buddiee.dto.Page;
 import com.thoughtworks.buddiee.dto.Product;
-import com.thoughtworks.buddiee.exception.BadRequestException;
+import com.thoughtworks.buddiee.exception.ResourceNotFoundException;
 import com.thoughtworks.buddiee.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 
@@ -24,18 +24,18 @@ public class ProductService {
 
     public void deleteProduct(Long productId) {
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new BadRequestException(CAN_NOT_FIND_BASIC_INFO_OF_PRODUCT_WITH_ID_IS + productId));
+                .orElseThrow(() -> new ResourceNotFoundException(CAN_NOT_FIND_BASIC_INFO_OF_PRODUCT_WITH_ID_IS + productId));
         productRepository.deleteById(product.getId());
     }
 
     public Product findProduct(Long productId) {
         return productRepository.findById(productId)
-                .orElseThrow(() -> new BadRequestException(CAN_NOT_FIND_BASIC_INFO_OF_PRODUCT_WITH_ID_IS + productId));
+                .orElseThrow(() -> new ResourceNotFoundException(CAN_NOT_FIND_BASIC_INFO_OF_PRODUCT_WITH_ID_IS + productId));
     }
 
     public Product updateProduct(Long productId, Product updateProduct) {
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new BadRequestException(CAN_NOT_FIND_BASIC_INFO_OF_PRODUCT_WITH_ID_IS + productId));
+                .orElseThrow(() -> new ResourceNotFoundException(CAN_NOT_FIND_BASIC_INFO_OF_PRODUCT_WITH_ID_IS + productId));
         updateProduct.setId(product.getId());
         productRepository.save(updateProduct);
         return updateProduct;
