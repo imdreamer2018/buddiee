@@ -113,7 +113,7 @@ public class ProductControllerTest {
 
             @Test
             void should_throw_resource_not_found_exception() throws Exception {
-                doThrow(BadRequestException.class).when(productService).deleteProduct(anyLong());
+                doThrow(ResourceNotFoundException.class).when(productService).deleteProduct(anyLong());
                 mockMvc.perform(delete("/products/1")
                         .contentType(MediaType.APPLICATION_JSON))
                         .andExpect(status().isNotFound());
