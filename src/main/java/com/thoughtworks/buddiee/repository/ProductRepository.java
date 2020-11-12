@@ -1,9 +1,13 @@
 package com.thoughtworks.buddiee.repository;
 
+import com.thoughtworks.buddiee.dto.Page;
 import com.thoughtworks.buddiee.dto.Product;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
@@ -34,5 +38,26 @@ public class ProductRepository {
 
     public void deleteById(Long id) {
         productMap.remove(id);
+    }
+
+    private Page<Product> getReverseSortPageProducts(int pageNumber, int totalPage, int startKey, int endKey ) {
+        List<Product> allProducts = new ArrayList<>(productMap.values());
+        Collections.reverse(allProducts);
+        Page<Product> result = new Page<>();
+        result.setCurrentPage(pageNumber);
+        result.setTotalPage(totalPage);
+        result.setData(allProducts.subList(startKey, endKey));
+        return result;
+    }
+
+    public Page<Product> findAll(int pageNumber, int pageSize) {
+        int pages = productMap.size() % pageSize != 0 ? productMap.size() / pageSize + 1 : productMap.size() / pageSize;
+        if (pageNumber > pages)
+            return getReverseSortPageProducts(pageNumber, pages, 0, 0);
+
+        if (pageNumber == pages)
+            return getReverseSortPageProducts(pageNumber, pages, (pageNumber - 1) * pageSize, productMap.size());
+
+        return getReverseSortPageProducts(pageNumber, pages, (pageNumber - 1) * pageSize, pageNumber * pageSize);
     }
 }
