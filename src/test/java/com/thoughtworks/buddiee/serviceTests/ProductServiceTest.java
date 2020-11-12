@@ -2,7 +2,7 @@ package com.thoughtworks.buddiee.serviceTests;
 
 import com.thoughtworks.buddiee.dto.Page;
 import com.thoughtworks.buddiee.dto.Product;
-import com.thoughtworks.buddiee.exception.BadRequestException;
+import com.thoughtworks.buddiee.exception.ResourceNotFoundException;
 import com.thoughtworks.buddiee.repository.ProductRepository;
 import com.thoughtworks.buddiee.service.ProductService;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,6 +19,8 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -73,9 +75,9 @@ public class ProductServiceTest {
 
             @Test
             void should_delete_success() {
-                when(productRepository.findById(1L)).thenReturn(Optional.of(product));
+                when(productRepository.findById(anyLong())).thenReturn(Optional.of(product));
                 productService.deleteProduct(1L);
-                verify(productRepository).deleteById(1L);
+                verify(productRepository, times(1)).deleteById(1L);
             }
         }
 
@@ -83,9 +85,9 @@ public class ProductServiceTest {
         class WhenProductIdIsNotExisted {
 
             @Test
-            void should_throw_bad_request_exception() {
+            void should_throw_resource_not_found_exception() {
                 when(productRepository.findById(1L)).thenReturn(Optional.empty());
-                BadRequestException exception = assertThrows(BadRequestException.class, () -> productService.deleteProduct(1L));
+                ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> productService.deleteProduct(1L));
                 assertEquals("can not find basic info of product with id is " + 1L, exception.getMessage());
             }
         }
@@ -109,9 +111,9 @@ public class ProductServiceTest {
         class WhenProductIdIsNotExisted {
 
             @Test
-            void should_throw_bad_request_exception() {
+            void should_throw_resource_not_found_exception() {
                 when(productRepository.findById(1L)).thenReturn(Optional.empty());
-                BadRequestException exception = assertThrows(BadRequestException.class, () -> productService.findProduct(1L));
+                ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> productService.findProduct(1L));
                 assertEquals("can not find basic info of product with id is " + 1L, exception.getMessage());
             }
         }
@@ -135,9 +137,9 @@ public class ProductServiceTest {
         class WhenProductIdIsNotExisted {
 
             @Test
-            void should_throw_bad_request_exception() {
+            void should_throw_resource_not_found_exception() {
                 when(productRepository.findById(1L)).thenReturn(Optional.empty());
-                BadRequestException exception = assertThrows(BadRequestException.class, () -> productService.updateProduct(1L, product));
+                ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> productService.updateProduct(1L, product));
                 assertEquals("can not find basic info of product with id is " + 1L, exception.getMessage());
             }
         }
