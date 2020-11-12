@@ -17,8 +17,7 @@ public class ProductService {
     }
 
     public Product createProduct(Product product) {
-        Long productId = productRepository.save(product);
-        product.setId(productId);
+        productRepository.save(product);
         return product;
     }
 

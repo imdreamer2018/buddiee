@@ -28,8 +28,13 @@ public class ProductRepository {
     }
 
     public Long save(Product product) {
-        productMap.put(incrementProductId(), product);
-        return maxProductId.get();
+        if (product.getId() != null)
+            productMap.put(product.getId(), product);
+        else {
+            productMap.put(incrementProductId(), product);
+            product.setId(maxProductId.get());
+        }
+        return product.getId();
     }
 
     public Optional<Product> findById(Long id) {
