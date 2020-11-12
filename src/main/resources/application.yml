@@ -1,1 +1,7 @@
+aliyun:
+  oss:
+    endpoint: ${ALIYUN_OSS_ENDPOINT:''}
+    accessKeyId: ${ALIYUN_OSS_ACCESS_KEY_ID:''}
+    accessKeySecret: ${ALIYUN_OSS_ACCESS_KEY_SECRET:''}
+    bucketName: ${ALIYUN_OSS_BUCKET_NAME:''}
 
