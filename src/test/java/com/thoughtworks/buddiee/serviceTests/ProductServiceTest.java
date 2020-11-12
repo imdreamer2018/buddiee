@@ -1,5 +1,6 @@
 package com.thoughtworks.buddiee.serviceTests;
 
+import com.thoughtworks.buddiee.dto.Page;
 import com.thoughtworks.buddiee.dto.Product;
 import com.thoughtworks.buddiee.exception.BadRequestException;
 import com.thoughtworks.buddiee.repository.ProductRepository;
@@ -11,11 +12,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -30,6 +33,10 @@ public class ProductServiceTest {
 
     private Product product;
 
+    private final List<Product> products = new ArrayList<>();
+
+    private final Page<Product> productPage = new Page<>();
+
     @BeforeEach
     void setUp() {
         initMocks(this);
@@ -40,6 +47,8 @@ public class ProductServiceTest {
                 .imageUrl("mock image url")
                 .price(10)
                 .build();
+        products.add(product);
+        productPage.setData(products);
     }
 
     @Nested
@@ -131,6 +140,17 @@ public class ProductServiceTest {
                 BadRequestException exception = assertThrows(BadRequestException.class, () -> productService.updateProduct(1L, product));
                 assertEquals("can not find basic info of product with id is " + 1L, exception.getMessage());
             }
+        }
+    }
+
+    @Nested
+    class FindProducts {
+
+        @Test
+        void should_return_products_info() {
+            when(productRepository.findAll(anyInt(), anyInt())).thenReturn(productPage);
+            Page<Product> products = productService.findProducts(1, 1);
+            assertEquals(1, products.getData().size());
         }
     }
 

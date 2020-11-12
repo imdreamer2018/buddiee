@@ -1,5 +1,6 @@
 package com.thoughtworks.buddiee.service;
 
+import com.thoughtworks.buddiee.dto.Page;
 import com.thoughtworks.buddiee.dto.Product;
 import com.thoughtworks.buddiee.exception.BadRequestException;
 import com.thoughtworks.buddiee.repository.ProductRepository;
@@ -38,5 +39,9 @@ public class ProductService {
         updateProduct.setId(product.getId());
         productRepository.save(updateProduct);
         return updateProduct;
+    }
+
+    public Page<Product> findProducts(int pageNumber, int pageSize) {
+        return productRepository.findAll(pageNumber, pageSize);
     }
 }
