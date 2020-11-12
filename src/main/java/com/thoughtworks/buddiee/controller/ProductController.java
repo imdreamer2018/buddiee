@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import java.io.IOException;
 
 @RestController
 @Validated
@@ -33,7 +34,7 @@ public class ProductController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Product createProduct(@RequestBody @Valid Product product) {
+    public Product createProduct(@RequestBody @Valid Product product) throws IOException {
         return productService.createProduct(product);
     }
 

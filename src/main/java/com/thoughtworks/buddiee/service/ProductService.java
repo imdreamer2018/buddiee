@@ -4,19 +4,27 @@ import com.thoughtworks.buddiee.dto.Page;
 import com.thoughtworks.buddiee.dto.Product;
 import com.thoughtworks.buddiee.exception.ResourceNotFoundException;
 import com.thoughtworks.buddiee.repository.ProductRepository;
+import com.thoughtworks.buddiee.util.AliyunOssUtil;
 import org.springframework.stereotype.Service;
+
+import java.io.IOException;
 
 @Service
 public class ProductService {
 
     public static final String CAN_NOT_FIND_BASIC_INFO_OF_PRODUCT_WITH_ID_IS = "can not find basic info of product with id is ";
     private final ProductRepository productRepository;
+    private final AliyunOssUtil aliyunOssUtil;
 
-    public ProductService(ProductRepository productRepository) {
+    public ProductService(ProductRepository productRepository, AliyunOssUtil aliyunOssUtil) {
         this.productRepository = productRepository;
+        this.aliyunOssUtil = aliyunOssUtil;
     }
 
-    public Product createProduct(Product product) {
+
+    public Product createProduct(Product product) throws IOException {
+        String url = aliyunOssUtil.uploadBase64FileToAliyunOss(product.getImageUrl());
+        product.setImageUrl(url);
         productRepository.save(product);
         return product;
     }
