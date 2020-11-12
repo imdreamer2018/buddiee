@@ -3,7 +3,6 @@ package com.thoughtworks.buddiee.controllerTests;
 import com.thoughtworks.buddiee.controller.ProductController;
 import com.thoughtworks.buddiee.dto.Page;
 import com.thoughtworks.buddiee.dto.Product;
-import com.thoughtworks.buddiee.exception.BadRequestException;
 import com.thoughtworks.buddiee.exception.ResourceNotFoundException;
 import com.thoughtworks.buddiee.service.ProductService;
 import org.junit.jupiter.api.AfterEach;
