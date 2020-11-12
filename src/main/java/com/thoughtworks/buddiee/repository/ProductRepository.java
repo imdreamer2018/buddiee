@@ -23,14 +23,14 @@ public class ProductRepository {
         productMap.clear();
     }
 
-    public Long save(Product product) {
+    public Product save(Product product) {
         if (product.getId() != null)
             productMap.put(product.getId(), product);
         else {
             productMap.put(maxProductId.incrementAndGet(), product);
             product.setId(maxProductId.get());
         }
-        return product.getId();
+        return product;
     }
 
     public Optional<Product> findById(Long id) {
