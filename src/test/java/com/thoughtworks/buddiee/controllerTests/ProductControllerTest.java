@@ -19,6 +19,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,7 +64,7 @@ public class ProductControllerTest {
                 .name("mock product name")
                 .description("mock product description")
                 .imageUrl("mock image url")
-                .price(10)
+                .price(new BigDecimal(10))
                 .build();
         products.add(product);
         productPage.setData(products);

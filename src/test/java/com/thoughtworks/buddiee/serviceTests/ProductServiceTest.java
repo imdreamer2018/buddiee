@@ -12,6 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -47,7 +48,7 @@ public class ProductServiceTest {
                 .name("mock product name")
                 .description("mock product description")
                 .imageUrl("mock image url")
-                .price(10)
+                .price(new BigDecimal(10))
                 .build();
         products.add(product);
         productPage.setData(products);

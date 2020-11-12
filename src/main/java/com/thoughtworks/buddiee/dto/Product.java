@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -23,5 +24,5 @@ public class Product {
     private String imageUrl;
     @NotNull(message = "product price can not empty")
     @Min(value = 0, message = "product price must be greater than 0")
-    private Integer price;
+    private BigDecimal price;
 }
