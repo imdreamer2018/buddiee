@@ -4,6 +4,7 @@ import com.thoughtworks.buddiee.controller.ProductController;
 import com.thoughtworks.buddiee.dto.Page;
 import com.thoughtworks.buddiee.dto.Product;
 import com.thoughtworks.buddiee.exception.BadRequestException;
+import com.thoughtworks.buddiee.exception.ResourceNotFoundException;
 import com.thoughtworks.buddiee.service.ProductService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -111,11 +112,11 @@ public class ProductControllerTest {
         class WhenProductIdIsNotExisted {
 
             @Test
-            void should_throw_bad_request_exception() throws Exception {
+            void should_throw_resource_not_found_exception() throws Exception {
                 doThrow(BadRequestException.class).when(productService).deleteProduct(anyLong());
                 mockMvc.perform(delete("/products/1")
                         .contentType(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isBadRequest());
+                        .andExpect(status().isNotFound());
                 verify(productService, times(1)).deleteProduct(1L);
             }
         }
@@ -140,11 +141,11 @@ public class ProductControllerTest {
         class WhenProductIdIsNotExisted {
 
             @Test
-            void should_throw_bad_request_exception() throws Exception {
-                doThrow(BadRequestException.class).when(productService).findProduct(anyLong());
+            void should_throw_resource_not_found_exception() throws Exception {
+                doThrow(ResourceNotFoundException.class).when(productService).findProduct(anyLong());
                 mockMvc.perform(get("/products/1")
                         .contentType(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isBadRequest());
+                        .andExpect(status().isNotFound());
                 verify(productService, times(1)).findProduct(1L);
             }
         }
@@ -170,12 +171,12 @@ public class ProductControllerTest {
         class WhenProductIdIsNotExisted {
 
             @Test
-            void should_throw_bad_request_exception() throws Exception {
-                doThrow(BadRequestException.class).when(productService).updateProduct(anyLong(), any(Product.class));
+            void should_throw_resource_not_found_exception() throws Exception {
+                doThrow(ResourceNotFoundException.class).when(productService).updateProduct(anyLong(), any(Product.class));
                 mockMvc.perform(put("/products/1")
                         .content(productJson.write(product).getJson())
                         .contentType(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isBadRequest());
+                        .andExpect(status().isNotFound());
                 verify(productService, times(1)).updateProduct(1L, product);
             }
         }
