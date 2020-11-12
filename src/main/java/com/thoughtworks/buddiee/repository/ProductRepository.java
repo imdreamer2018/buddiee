@@ -19,10 +19,6 @@ public class ProductRepository {
 
     private final AtomicLong maxProductId = new AtomicLong(0L);
 
-    public Long incrementProductId() {
-        return maxProductId.incrementAndGet();
-    }
-
     public void deleteAll() {
         productMap.clear();
     }
@@ -31,7 +27,7 @@ public class ProductRepository {
         if (product.getId() != null)
             productMap.put(product.getId(), product);
         else {
-            productMap.put(incrementProductId(), product);
+            productMap.put(maxProductId.incrementAndGet(), product);
             product.setId(maxProductId.get());
         }
         return product.getId();
