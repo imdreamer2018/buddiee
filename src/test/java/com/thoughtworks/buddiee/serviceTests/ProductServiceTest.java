@@ -5,6 +5,7 @@ import com.thoughtworks.buddiee.dto.Product;
 import com.thoughtworks.buddiee.exception.ResourceNotFoundException;
 import com.thoughtworks.buddiee.repository.ProductRepository;
 import com.thoughtworks.buddiee.service.ProductService;
+import com.thoughtworks.buddiee.util.AliyunOssUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -34,6 +37,9 @@ public class ProductServiceTest {
     @Mock
     ProductRepository productRepository;
 
+    @Mock
+    AliyunOssUtil aliyunOssUtil;
+
     private Product product;
 
     private final List<Product> products = new ArrayList<>();
@@ -43,7 +49,7 @@ public class ProductServiceTest {
     @BeforeEach
     void setUp() {
         initMocks(this);
-        productService = new ProductService(productRepository);
+        productService = new ProductService(productRepository, aliyunOssUtil);
         product = Product.builder()
                 .name("mock product name")
                 .description("mock product description")
@@ -61,7 +67,8 @@ public class ProductServiceTest {
         class WhenCreateSuccess {
 
             @Test
-            void should_return_product_info() {
+            void should_return_product_info() throws IOException {
+                when(aliyunOssUtil.uploadBase64FileToAliyunOss(anyString())).thenReturn(product.getImageUrl());
                 Product productResponse = productService.createProduct(product);
                 assertEquals("mock product name", productResponse.getName());
             }
