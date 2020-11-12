@@ -1,6 +1,7 @@
 package com.thoughtworks.buddiee.controllerTests;
 
 import com.thoughtworks.buddiee.controller.ProductController;
+import com.thoughtworks.buddiee.dto.Page;
 import com.thoughtworks.buddiee.dto.Product;
 import com.thoughtworks.buddiee.exception.BadRequestException;
 import com.thoughtworks.buddiee.service.ProductService;
@@ -17,9 +18,22 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyLong;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -38,6 +52,10 @@ public class ProductControllerTest {
 
     private Product product;
 
+    private final List<Product> products = new ArrayList<>();
+
+    private final Page<Product> productPage = new Page<>();
+
     @BeforeEach
     void setUp() {
         product = Product.builder()
@@ -46,6 +64,8 @@ public class ProductControllerTest {
                 .imageUrl("mock image url")
                 .price(10)
                 .build();
+        products.add(product);
+        productPage.setData(products);
     }
 
     @AfterEach
@@ -158,6 +178,20 @@ public class ProductControllerTest {
                         .andExpect(status().isBadRequest());
                 verify(productService, times(1)).updateProduct(1L, product);
             }
+        }
+    }
+
+    @Nested
+    class FindProducts {
+
+        @Test
+        void should_return_products_info() throws Exception {
+            when(productService.findProducts(anyInt(), anyInt())).thenReturn(productPage);
+            mockMvc.perform(get("/products")
+                    .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.data", hasSize(1)));
+            verify(productService, times(1)).findProducts(anyInt(), anyInt());
         }
     }
 }
