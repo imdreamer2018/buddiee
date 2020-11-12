@@ -22,9 +22,9 @@ public class ProductService {
     }
 
     public void deleteProduct(Long productId) {
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new ResourceNotFoundException(CAN_NOT_FIND_BASIC_INFO_OF_PRODUCT_WITH_ID_IS + productId));
-        productRepository.deleteById(product.getId());
+        if (!productRepository.findById(productId).isPresent())
+            throw new ResourceNotFoundException(CAN_NOT_FIND_BASIC_INFO_OF_PRODUCT_WITH_ID_IS + productId);
+        productRepository.deleteById(productId);
     }
 
     public Product findProduct(Long productId) {
