@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.thoughtworks.buddiee.service.ProductService.CAN_NOT_FIND_BASIC_INFO_OF_PRODUCT_WITH_ID_IS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -96,7 +97,7 @@ public class ProductServiceTest {
             void should_throw_resource_not_found_exception() {
                 when(productRepository.findById(1L)).thenReturn(Optional.empty());
                 ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> productService.deleteProduct(1L));
-                assertEquals("can not find basic info of product with id is " + 1L, exception.getMessage());
+                assertEquals(CAN_NOT_FIND_BASIC_INFO_OF_PRODUCT_WITH_ID_IS + 1L, exception.getMessage());
             }
         }
     }
@@ -122,7 +123,7 @@ public class ProductServiceTest {
             void should_throw_resource_not_found_exception() {
                 when(productRepository.findById(1L)).thenReturn(Optional.empty());
                 ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> productService.findProduct(1L));
-                assertEquals("can not find basic info of product with id is " + 1L, exception.getMessage());
+                assertEquals(CAN_NOT_FIND_BASIC_INFO_OF_PRODUCT_WITH_ID_IS + 1L, exception.getMessage());
             }
         }
     }
@@ -148,7 +149,7 @@ public class ProductServiceTest {
             void should_throw_resource_not_found_exception() {
                 when(productRepository.findById(1L)).thenReturn(Optional.empty());
                 ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> productService.updateProduct(1L, product));
-                assertEquals("can not find basic info of product with id is " + 1L, exception.getMessage());
+                assertEquals(CAN_NOT_FIND_BASIC_INFO_OF_PRODUCT_WITH_ID_IS + 1L, exception.getMessage());
             }
         }
     }
