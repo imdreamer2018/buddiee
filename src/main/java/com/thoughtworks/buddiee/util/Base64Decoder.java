@@ -17,9 +17,12 @@ public class Base64Decoder implements MultipartFile {
 
     private final String HEADER;
 
+    private final String FILETYPE;
+
     private Base64Decoder(byte[]image,String header){
         this.IMAGE = image;
         this.HEADER = header;
+        this.FILETYPE = HEADER.split("/")[1].split(";")[0];
     }
 
     public static MultipartFile multipartFile(byte[]image,String header){
@@ -28,12 +31,12 @@ public class Base64Decoder implements MultipartFile {
 
     @Override
     public String getName() {
-        return UUID.randomUUID()+"."+HEADER.split("/")[1].split(";")[0];
+        return UUID.randomUUID()+"."+this.FILETYPE;
     }
 
     @Override
     public String getOriginalFilename() {
-        return UUID.randomUUID()+"."+HEADER.split("/")[1].split(";")[0];
+        return UUID.randomUUID()+"."+this.FILETYPE;
     }
 
     @Override
