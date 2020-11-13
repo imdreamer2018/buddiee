@@ -69,7 +69,7 @@ public class ProductServiceTest {
 
             @Test
             void should_return_product_info() throws IOException {
-                when(aliyunOssUtil.uploadBase64FileToAliyunOss(anyString())).thenReturn(product.getImageUrl());
+                when(aliyunOssUtil.uploadBase64FileToAliyunOss(anyString(), anyString())).thenReturn(product.getImageUrl());
                 Product productResponse = productService.createProduct(product);
                 assertEquals("mock product name", productResponse.getName());
             }

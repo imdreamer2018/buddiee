@@ -23,7 +23,7 @@ public class ProductService {
 
 
     public Product createProduct(Product product) throws IOException {
-        String url = aliyunOssUtil.uploadBase64FileToAliyunOss(product.getImageUrl());
+        String url = aliyunOssUtil.uploadBase64FileToAliyunOss("image/product/", product.getImageUrl());
         product.setImageUrl(url);
         productRepository.save(product);
         return product;

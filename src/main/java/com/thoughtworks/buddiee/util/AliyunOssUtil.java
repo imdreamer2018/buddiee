@@ -46,9 +46,9 @@ public class AliyunOssUtil {
         ossClient.shutdown();
     }
 
-    public String uploadBase64FileToAliyunOss(String base64String) throws IOException {
+    public String uploadBase64FileToAliyunOss(String dir, String base64String) throws IOException {
         MultipartFile imageFile = Base64Converter.converter(base64String);
-        return this.uploadFile(imageFile, imageFile.getOriginalFilename());
+        return this.uploadFile(imageFile, "buddiee/" + dir + imageFile.getOriginalFilename());
     }
 
 
