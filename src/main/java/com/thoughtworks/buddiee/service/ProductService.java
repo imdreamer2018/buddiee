@@ -30,8 +30,10 @@ public class ProductService {
     }
 
     public void deleteProduct(Long productId) {
-        if (!productRepository.findById(productId).isPresent())
-            throw new ResourceNotFoundException(CAN_NOT_FIND_BASIC_INFO_OF_PRODUCT_WITH_ID_IS + productId);
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException(CAN_NOT_FIND_BASIC_INFO_OF_PRODUCT_WITH_ID_IS + productId));
+        String productImageAbsolutePath = product.getImageUrl().split("com")[1];
+        aliyunOssUtil.deleteFile(productImageAbsolutePath);
         productRepository.deleteById(productId);
     }
 

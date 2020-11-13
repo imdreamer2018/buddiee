@@ -25,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -54,7 +55,7 @@ public class ProductServiceTest {
         product = Product.builder()
                 .name("mock product name")
                 .description("mock product description")
-                .imageUrl("mock image url")
+                .imageUrl("mock image url.com/path")
                 .price(new BigDecimal(10))
                 .build();
         products.add(product);
@@ -85,6 +86,7 @@ public class ProductServiceTest {
             @Test
             void should_delete_success() {
                 when(productRepository.findById(anyLong())).thenReturn(Optional.of(product));
+                doNothing().when(aliyunOssUtil).deleteFile(anyString());
                 productService.deleteProduct(1L);
                 verify(productRepository, times(1)).deleteById(1L);
             }

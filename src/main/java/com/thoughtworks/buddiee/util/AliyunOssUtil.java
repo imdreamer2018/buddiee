@@ -40,7 +40,7 @@ public class AliyunOssUtil {
                 +aliyunOssUtil.aliyunOssConfig.getEndpoint()+"/" + key;
     }
 
-    public void deleteFile(String key ){
+    public void deleteFile(String key){
         OSS ossClient = getOSSClient();
         ossClient.deleteObject(aliyunOssUtil.aliyunOssConfig.getBucketName(), key);
         ossClient.shutdown();
