@@ -1,5 +1,6 @@
 package com.thoughtworks.buddiee.entity;
 
+import com.thoughtworks.buddiee.dto.Product;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,4 +28,14 @@ public class ProductEntity {
     private String description;
     private String imageUrl;
     private BigDecimal price;
+
+    public Product toProduct() {
+        return Product.builder()
+                .id(this.getId())
+                .name(this.getName())
+                .description(this.getDescription())
+                .imageUrl(this.getImageUrl())
+                .price(this.getPrice())
+                .build();
+    }
 }
