@@ -5,13 +5,14 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQL5InnoDBDialect
         format_sql: true
-    hibernate:
-      ddl-auto: create
   datasource:
     url: jdbc:mysql://127.0.0.1:3306/buddiee?characterEncoding=utf8&characterSetResults=utf8
     username: root
-    password: $password
+    password: password
     driver-class-name: com.mysql.jdbc.Driver
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
 logging:
   level:
     org:
