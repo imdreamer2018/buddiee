@@ -15,6 +15,9 @@ configurations {
 }
 
 repositories {
+    maven { url 'https://maven.aliyun.com/repository/public' }
+    maven { url 'https://maven.aliyun.com/repository/spring/'}
+    mavenLocal()
     mavenCentral()
 }
 
@@ -23,6 +26,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation "com.aliyun.oss:aliyun-sdk-oss:3.10.2"
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    compile 'mysql:mysql-connector-java'
+    testCompile group: 'com.h2database', name: 'h2', version: '1.4.197'
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
