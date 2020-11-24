@@ -29,6 +29,7 @@ public class Product {
 
     public ProductEntity toProductEntity() {
         return ProductEntity.builder()
+                .id(this.getId())
                 .name(this.getName())
                 .description(this.getDescription())
                 .imageUrl(this.getImageUrl())
