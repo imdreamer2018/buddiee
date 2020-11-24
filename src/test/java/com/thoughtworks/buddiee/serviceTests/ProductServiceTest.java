@@ -2,6 +2,7 @@ package com.thoughtworks.buddiee.serviceTests;
 
 import com.thoughtworks.buddiee.dto.Page;
 import com.thoughtworks.buddiee.dto.Product;
+import com.thoughtworks.buddiee.entity.ProductEntity;
 import com.thoughtworks.buddiee.exception.ResourceNotFoundException;
 import com.thoughtworks.buddiee.repository.ProductRepository;
 import com.thoughtworks.buddiee.service.ProductService;
@@ -12,6 +13,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -22,7 +26,6 @@ import java.util.Optional;
 import static com.thoughtworks.buddiee.service.ProductService.CAN_NOT_FIND_BASIC_INFO_OF_PRODUCT_WITH_ID_IS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
@@ -44,9 +47,11 @@ public class ProductServiceTest {
 
     private Product product;
 
-    private final List<Product> products = new ArrayList<>();
+    private ProductEntity productEntity;
 
-    private final Page<Product> productPage = new Page<>();
+    private List<Product> products = new ArrayList<>();
+
+    private List<ProductEntity> productEntities = new ArrayList<>();
 
     @BeforeEach
     void setUp() {
@@ -58,8 +63,10 @@ public class ProductServiceTest {
                 .imageUrl("mock image url.com/path")
                 .price(new BigDecimal(10))
                 .build();
+        productEntity = product.toProductEntity();
         products.add(product);
-        productPage.setData(products);
+        productEntities.add(productEntity);
+
     }
 
     @Nested
@@ -85,7 +92,7 @@ public class ProductServiceTest {
 
             @Test
             void should_delete_success() {
-                when(productRepository.findById(anyLong())).thenReturn(Optional.of(product));
+                when(productRepository.findById(anyLong())).thenReturn(Optional.of(productEntity));
                 doNothing().when(aliyunOssUtil).deleteFile(anyString());
                 productService.deleteProduct(1L);
                 verify(productRepository, times(1)).deleteById(1L);
@@ -112,7 +119,7 @@ public class ProductServiceTest {
 
             @Test
             void should_return_product_info() {
-                when(productRepository.findById(1L)).thenReturn(Optional.of(product));
+                when(productRepository.findById(1L)).thenReturn(Optional.of(productEntity));
                 Product product = productService.findProduct(1L);
                 assertEquals("mock product name", product.getName());
             }
@@ -138,7 +145,7 @@ public class ProductServiceTest {
 
             @Test
             void should_return_product_info() {
-                when(productRepository.findById(1L)).thenReturn(Optional.of(product));
+                when(productRepository.findById(1L)).thenReturn(Optional.of(productEntity));
                 Product updateProduct = productService.updateProduct(1L, product);
                 assertEquals("mock product name", updateProduct.getName());
             }
@@ -161,7 +168,9 @@ public class ProductServiceTest {
 
         @Test
         void should_return_products_info() {
-            when(productRepository.findAll(anyInt(), anyInt())).thenReturn(productPage);
+            Pageable pageable = PageRequest.of(0, 1);
+            org.springframework.data.domain.Page<ProductEntity> productsPage = new PageImpl<>(productEntities);
+            when(productRepository.findAll(pageable)).thenReturn(productsPage);
             Page<Product> products = productService.findProducts(1, 1);
             assertEquals(1, products.getData().size());
         }
