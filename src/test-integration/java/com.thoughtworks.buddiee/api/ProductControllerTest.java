@@ -181,4 +181,18 @@ class ProductControllerTest extends ApiBaseTest {
         }
     }
 
+    @Test
+    void should_return_products_when_find_products_by_page_number_and_page_size() {
+        RequestSpecification request = given().header("Content-Type", "application/json");
+
+        Response response = given().spec(request)
+                .queryParam("pageNumber", 1)
+                .queryParam("pageSize", 10)
+                .get("products");
+
+        assertThat(response.statusCode()).isEqualTo(200);
+        DocumentContext parsedJson = JsonPath.parse(response.getBody().asString());
+        assertThatJson(parsedJson).field("['data']").hasSize(3);
+    }
+
 }
