@@ -74,5 +74,16 @@ public class ProductControllerTest extends ApiBaseTest {
             DocumentContext parsedJson = JsonPath.parse(response.getBody().asString());
             assertThatJson(parsedJson).field("['name']").isEqualTo("可乐");
         }
+
+        @Test
+        void should_throw_exception_when_product_not_existed() {
+            RequestSpecification request = given().header("Content-Type", "application/json");
+
+            Response response = given().spec(request)
+                    .pathParam("id", 4)
+                    .get("products/{id}");
+
+            assertThat(response.statusCode()).isEqualTo(404);
+        }
     }
 }
