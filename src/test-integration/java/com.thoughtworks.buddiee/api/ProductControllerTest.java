@@ -89,30 +89,28 @@ public class ProductControllerTest extends ApiBaseTest {
         }
     }
 
-    @Nested
-    class CreateProduct {
 
-        @Test
-        void should_return_product_info_when_create_success() {
-            Product productRequest = Product.builder()
-                    .name("元气森林")
-                    .description("无糖饮料，好喝！")
-                    .imageUrl("data:img/jpg;base64,iVBORw0KGgo")
-                    .price(new BigDecimal("4"))
-                    .build();
+    @Test
+    void should_return_product_info_when_create_product_success() {
+        Product productRequest = Product.builder()
+                .name("元气森林")
+                .description("无糖饮料，好喝！")
+                .imageUrl("data:img/jpg;base64,iVBORw0KGgo")
+                .price(new BigDecimal("4"))
+                .build();
 
-            RequestSpecification request = given().header("Content-Type", "application/json");
+        RequestSpecification request = given().header("Content-Type", "application/json");
 
-            Response response = given().spec(request)
-                    .body(productRequest)
-                    .post("products");
+        Response response = given().spec(request)
+                .body(productRequest)
+                .post("products");
 
-            assertThat(response.statusCode()).isEqualTo(201);
-            DocumentContext parsedJson = JsonPath.parse(response.getBody().asString());
-            assertThatJson(parsedJson).field("['name']").isEqualTo("元气森林");
+        assertThat(response.statusCode()).isEqualTo(201);
+        DocumentContext parsedJson = JsonPath.parse(response.getBody().asString());
+        assertThatJson(parsedJson).field("['name']").isEqualTo("元气森林");
 
-        }
     }
+
 
 
 }
