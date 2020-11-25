@@ -14,7 +14,6 @@ import org.springframework.web.context.WebApplicationContext;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = BuddieeApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles("test")
 public abstract class ApiBaseTest {
 
     @LocalServerPort
