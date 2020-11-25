@@ -3,6 +3,7 @@ package com.thoughtworks.buddiee.api;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.thoughtworks.buddiee.base.ApiBaseTest;
+import com.thoughtworks.buddiee.dto.Product;
 import com.thoughtworks.buddiee.entity.ProductEntity;
 import com.thoughtworks.buddiee.repository.ProductRepository;
 import io.restassured.response.Response;
@@ -23,6 +24,7 @@ public class ProductControllerTest extends ApiBaseTest {
 
     @Autowired
     ProductRepository productRepository;
+
 
     @BeforeEach
     void setUp() {
@@ -80,10 +82,35 @@ public class ProductControllerTest extends ApiBaseTest {
             RequestSpecification request = given().header("Content-Type", "application/json");
 
             Response response = given().spec(request)
-                    .pathParam("id", 4)
+                    .pathParam("id", 999)
                     .get("products/{id}");
 
             assertThat(response.statusCode()).isEqualTo(404);
+        }
+    }
+
+    @Nested
+    class CreateProduct {
+
+        @Test
+        void should_return_product_info_when_create_success() {
+            Product productRequest = Product.builder()
+                    .name("元气森林")
+                    .description("无糖饮料，好喝！")
+                    .imageUrl("data:img/jpg;base64,iVBORw0KGgo")
+                    .price(new BigDecimal("4"))
+                    .build();
+
+            RequestSpecification request = given().header("Content-Type", "application/json");
+
+            Response response = given().spec(request)
+                    .body(productRequest)
+                    .post("products");
+
+            assertThat(response.statusCode()).isEqualTo(201);
+            DocumentContext parsedJson = JsonPath.parse(response.getBody().asString());
+            assertThatJson(parsedJson).field("['name']").isEqualTo("元气森林");
+
         }
     }
 
