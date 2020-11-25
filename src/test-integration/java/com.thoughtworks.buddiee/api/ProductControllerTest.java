@@ -20,7 +20,7 @@ import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
-public class ProductControllerTest extends ApiBaseTest {
+class ProductControllerTest extends ApiBaseTest {
 
     @Autowired
     ProductRepository productRepository;
@@ -137,5 +137,48 @@ public class ProductControllerTest extends ApiBaseTest {
         }
     }
 
+    @Nested
+    class UpdateProductById {
+
+        @Test
+        void should_update_success_when_product_existed() {
+            Product productRequest = Product.builder()
+                    .name("元气森林")
+                    .description("无糖饮料，好喝！")
+                    .imageUrl("data:img/jpg;base64,iVBORw0KGgo")
+                    .price(new BigDecimal("4"))
+                    .build();
+
+            RequestSpecification request = given().header("Content-Type", "application/json");
+
+            Response response = given().spec(request)
+                    .pathParam("id", 3)
+                    .body(productRequest)
+                    .put("products/{id}");
+
+            assertThat(response.statusCode()).isEqualTo(200);
+            DocumentContext parsedJson = JsonPath.parse(response.getBody().asString());
+            assertThatJson(parsedJson).field("['name']").isEqualTo("元气森林");
+        }
+
+        @Test
+        void should_update_success_when_product_not_existed() {
+            Product productRequest = Product.builder()
+                    .name("元气森林")
+                    .description("无糖饮料，好喝！")
+                    .imageUrl("data:img/jpg;base64,iVBORw0KGgo")
+                    .price(new BigDecimal("4"))
+                    .build();
+
+            RequestSpecification request = given().header("Content-Type", "application/json");
+
+            Response response = given().spec(request)
+                    .pathParam("id", 4)
+                    .body(productRequest)
+                    .put("products/{id}");
+
+            assertThat(response.statusCode()).isEqualTo(404);
+        }
+    }
 
 }
