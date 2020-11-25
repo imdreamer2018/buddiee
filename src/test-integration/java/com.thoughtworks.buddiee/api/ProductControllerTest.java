@@ -111,6 +111,31 @@ public class ProductControllerTest extends ApiBaseTest {
 
     }
 
+    @Nested
+    class DeleteProductById {
+
+        @Test
+        void should_delete_success_when_product_existed() {
+            RequestSpecification request = given().header("Content-Type", "application/json");
+
+            Response response = given().spec(request)
+                    .pathParam("id", 4)
+                    .delete("products/{id}");
+
+            assertThat(response.statusCode()).isEqualTo(204);
+        }
+
+        @Test
+        void should_delete_success_when_product_not_existed() {
+            RequestSpecification request = given().header("Content-Type", "application/json");
+
+            Response response = given().spec(request)
+                    .pathParam("id", 4)
+                    .delete("products/{id}");
+
+            assertThat(response.statusCode()).isEqualTo(404);
+        }
+    }
 
 
 }
