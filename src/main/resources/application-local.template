@@ -1,6 +1,4 @@
 spring:
-  profiles:
-    active: local
   jpa:
     show-sql: false
     properties:
@@ -8,9 +6,9 @@ spring:
         dialect: org.hibernate.dialect.MySQL5InnoDBDialect
         format_sql: true
   datasource:
-    url: ${MYSQL_URL:''}
-    username: ${MYSQL_USERNAME:''}
-    password: ${MYSQL_PASSWORD:''}
+    url: jdbc:mysql://127.0.0.1:3306/buddiee?characterEncoding=utf8&characterSetResults=utf8
+    username: root
+    password: password
     driver-class-name: com.mysql.jdbc.Driver
   flyway:
     enabled: true
