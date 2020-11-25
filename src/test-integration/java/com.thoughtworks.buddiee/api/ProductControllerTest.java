@@ -67,7 +67,8 @@ public class ProductControllerTest extends ApiBaseTest {
             RequestSpecification request = given().header("Content-Type", "application/json");
 
             Response response = given().spec(request)
-                    .get("products/1");
+                    .pathParam("id", 1)
+                    .get("products/{id}");
 
             assertThat(response.statusCode()).isEqualTo(200);
             DocumentContext parsedJson = JsonPath.parse(response.getBody().asString());
