@@ -60,7 +60,7 @@ public class ProductControllerTest extends ApiBaseTest {
     }
 
     @Nested
-    class FindById {
+    class FindProductById {
 
         @Test
         void should_return_product_info_when_product_existed() {
@@ -86,4 +86,6 @@ public class ProductControllerTest extends ApiBaseTest {
             assertThat(response.statusCode()).isEqualTo(404);
         }
     }
+
+
 }
