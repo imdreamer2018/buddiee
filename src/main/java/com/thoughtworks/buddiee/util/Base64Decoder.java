@@ -1,5 +1,7 @@
 package com.thoughtworks.buddiee.util;
 
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -11,6 +13,8 @@ import java.io.InputStream;
 import java.util.UUID;
 
 @Slf4j
+@Getter
+@Setter
 public class Base64Decoder implements MultipartFile {
 
     private final byte[] IMAGE;
