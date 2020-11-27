@@ -3,6 +3,8 @@ package com.thoughtworks.buddiee.controller;
 import com.thoughtworks.buddiee.dto.Page;
 import com.thoughtworks.buddiee.dto.Product;
 import com.thoughtworks.buddiee.service.ProductService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,13 +26,11 @@ import java.io.IOException;
 @RestController
 @Validated
 @RequestMapping(value = "/products")
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class ProductController {
 
+    public static final String PRODUCT_ID_MUSE_BE_NUMBER_AND_GREATER_THAN_1 = "product id muse be number and greater than 1";
     private final ProductService productService;
-
-    public ProductController(ProductService productService) {
-        this.productService = productService;
-    }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -42,7 +42,7 @@ public class ProductController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteProduct(
             @NotNull(message = "product id can not be null")
-            @Min(value = 1, message = "product id muse be number and greater than 1")
+            @Min(value = 1, message = PRODUCT_ID_MUSE_BE_NUMBER_AND_GREATER_THAN_1)
             @PathVariable(name = "id") Long productId) {
         productService.deleteProduct(productId);
     }
@@ -50,7 +50,7 @@ public class ProductController {
     @GetMapping("/{id}")
     public Product findProduct(
             @NotNull(message = "product id can not be null")
-            @Min(value = 1, message = "product id muse be number and greater than 1")
+            @Min(value = 1, message = PRODUCT_ID_MUSE_BE_NUMBER_AND_GREATER_THAN_1)
             @PathVariable(name = "id") Long productId) {
         return productService.findProduct(productId);
     }
@@ -58,7 +58,7 @@ public class ProductController {
     @PutMapping("/{id}")
     public Product updateProduct(
             @NotNull(message = "product id can not be null")
-            @Min(value = 1, message = "product id muse be number and greater than 1")
+            @Min(value = 1, message = PRODUCT_ID_MUSE_BE_NUMBER_AND_GREATER_THAN_1)
             @PathVariable(name = "id") Long productId,
             @RequestBody @Valid Product updateProduct) {
         return productService.updateProduct(productId, updateProduct);
@@ -66,9 +66,9 @@ public class ProductController {
 
     @GetMapping
     public Page<Product> findProducts(
-            @Min(value = 1, message = "product id muse be number and greater than 1")
+            @Min(value = 1, message = PRODUCT_ID_MUSE_BE_NUMBER_AND_GREATER_THAN_1)
             @RequestParam(required = false, defaultValue = "1") int pageNumber,
-            @Min(value = 1, message = "product id muse be number and greater than 1")
+            @Min(value = 1, message = PRODUCT_ID_MUSE_BE_NUMBER_AND_GREATER_THAN_1)
             @RequestParam(required = false, defaultValue = "10") int pageSize) {
         return productService.findProducts(pageNumber, pageSize);
     }
