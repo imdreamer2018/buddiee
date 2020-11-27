@@ -6,6 +6,8 @@ import com.thoughtworks.buddiee.entity.ProductEntity;
 import com.thoughtworks.buddiee.exception.ResourceNotFoundException;
 import com.thoughtworks.buddiee.repository.ProductRepository;
 import com.thoughtworks.buddiee.util.AliyunOssUtil;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -16,17 +18,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class ProductService {
 
     public static final String CAN_NOT_FIND_BASIC_INFO_OF_PRODUCT_WITH_ID_IS = "can not find basic info of product with id is ";
     private final ProductRepository productRepository;
     private final AliyunOssUtil aliyunOssUtil;
-
-    public ProductService(ProductRepository productRepository, AliyunOssUtil aliyunOssUtil) {
-        this.productRepository = productRepository;
-        this.aliyunOssUtil = aliyunOssUtil;
-    }
-
 
     public Product createProduct(Product product) throws IOException {
         String url = aliyunOssUtil.uploadBase64FileToAliyunOss("image/product/", product.getImageUrl());
