@@ -38,26 +38,27 @@ import static org.mockito.MockitoAnnotations.initMocks;
 @ExtendWith(MockitoExtension.class)
 public class ProductServiceTest {
 
-    private ProductService productService;
+    public static final String MOCK_PRODUCT_NAME = "mock product name";
+    private static ProductService productService;
 
     @Mock
-    ProductRepository productRepository;
+    static ProductRepository productRepository;
 
     @Mock
-    AliyunOssUtil aliyunOssUtil;
+    static AliyunOssUtil aliyunOssUtil;
 
-    private Product product;
+    private static Product product;
 
-    private ProductEntity productEntity;
+    private static ProductEntity productEntity;
 
-    private final List<ProductEntity> productEntities = new ArrayList<>();
+    private static final List<ProductEntity> productEntities = new ArrayList<>();
 
     @BeforeEach
     void setUp() {
         initMocks(this);
         productService = new ProductService(productRepository, aliyunOssUtil);
         product = Product.builder()
-                .name("mock product name")
+                .name(MOCK_PRODUCT_NAME)
                 .description("mock product description")
                 .imageUrl("mock image url.com/path")
                 .price(new BigDecimal(10))
@@ -77,7 +78,7 @@ public class ProductServiceTest {
             void should_return_product_info() throws IOException {
                 when(aliyunOssUtil.uploadBase64FileToAliyunOss(anyString(), anyString())).thenReturn(product.getImageUrl());
                 Product productResponse = productService.createProduct(product);
-                assertEquals("mock product name", productResponse.getName());
+                assertEquals(MOCK_PRODUCT_NAME, productResponse.getName());
             }
         }
     }
@@ -119,7 +120,7 @@ public class ProductServiceTest {
             void should_return_product_info() {
                 when(productRepository.findById(1L)).thenReturn(Optional.of(productEntity));
                 Product product = productService.findProduct(1L);
-                assertEquals("mock product name", product.getName());
+                assertEquals(MOCK_PRODUCT_NAME, product.getName());
             }
         }
 
@@ -145,7 +146,7 @@ public class ProductServiceTest {
             void should_return_product_info() {
                 when(productRepository.findById(1L)).thenReturn(Optional.of(productEntity));
                 Product updateProduct = productService.updateProduct(1L, product);
-                assertEquals("mock product name", updateProduct.getName());
+                assertEquals(MOCK_PRODUCT_NAME, updateProduct.getName());
             }
         }
 
