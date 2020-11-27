@@ -3,46 +3,37 @@ package com.thoughtworks.buddiee.util;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
 import com.thoughtworks.buddiee.config.AliyunOssConfig;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.PostConstruct;
 import java.io.IOException;
 
 @Component
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class AliyunOssUtil {
 
     private final AliyunOssConfig aliyunOssConfig;
 
-    public AliyunOssUtil(AliyunOssConfig aliyunOssConfig) {
-        this.aliyunOssConfig = aliyunOssConfig;
-    }
-
-    private static AliyunOssUtil aliyunOssUtil;
-
-    @PostConstruct
-    public void init() {
-        aliyunOssUtil = this;
-    }
-
-    private static OSS getOSSClient(){
+    private OSS getOSSClient(){
         return new OSSClientBuilder().build(
-                aliyunOssUtil.aliyunOssConfig.getEndpoint(),
-                aliyunOssUtil.aliyunOssConfig.getAccessKeyId(),
-                aliyunOssUtil.aliyunOssConfig.getAccessKeySecret());
+                aliyunOssConfig.getEndpoint(),
+                aliyunOssConfig.getAccessKeyId(),
+                aliyunOssConfig.getAccessKeySecret());
     }
 
     public String uploadFile(MultipartFile file, String key) throws IOException {
         OSS ossClient = getOSSClient();
-        ossClient.putObject(aliyunOssUtil.aliyunOssConfig.getBucketName(), key , file.getInputStream());
+        ossClient.putObject(aliyunOssConfig.getBucketName(), key , file.getInputStream());
         ossClient.shutdown();
-        return "http://"+aliyunOssUtil.aliyunOssConfig.getBucketName()+"."
-                +aliyunOssUtil.aliyunOssConfig.getEndpoint()+"/" + key;
+        return "http://"+aliyunOssConfig.getBucketName()+"."
+                +aliyunOssConfig.getEndpoint()+"/" + key;
     }
 
     public void deleteFile(String key){
         OSS ossClient = getOSSClient();
-        ossClient.deleteObject(aliyunOssUtil.aliyunOssConfig.getBucketName(), key);
+        ossClient.deleteObject(aliyunOssConfig.getBucketName(), key);
         ossClient.shutdown();
     }
 
