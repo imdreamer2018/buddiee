@@ -16,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -49,9 +50,7 @@ public class ProductServiceTest {
 
     private ProductEntity productEntity;
 
-    private List<Product> products = new ArrayList<>();
-
-    private List<ProductEntity> productEntities = new ArrayList<>();
+    private final List<ProductEntity> productEntities = new ArrayList<>();
 
     @BeforeEach
     void setUp() {
@@ -64,7 +63,6 @@ public class ProductServiceTest {
                 .price(new BigDecimal(10))
                 .build();
         productEntity = product.toProductEntity();
-        products.add(product);
         productEntities.add(productEntity);
 
     }
@@ -168,7 +166,7 @@ public class ProductServiceTest {
 
         @Test
         void should_return_products_info() {
-            Pageable pageable = PageRequest.of(0, 1);
+            Pageable pageable = PageRequest.of(0, 1, Sort.by("id").descending());
             org.springframework.data.domain.Page<ProductEntity> productsPage = new PageImpl<>(productEntities);
             when(productRepository.findAll(pageable)).thenReturn(productsPage);
             Page<Product> products = productService.findProducts(1, 1);
