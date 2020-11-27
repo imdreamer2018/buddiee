@@ -177,7 +177,7 @@ class ProductControllerTest extends ApiBaseTest {
                 .statusCode(200)
                 .body("currentPage", is(1))
                 .body("totalPage", is(1))
-                .body("data[0].name", is("可乐"));
+                .body("data[0].name", is("雪碧"));
     }
 
 }

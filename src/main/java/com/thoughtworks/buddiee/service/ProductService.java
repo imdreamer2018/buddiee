@@ -8,6 +8,7 @@ import com.thoughtworks.buddiee.repository.ProductRepository;
 import com.thoughtworks.buddiee.util.AliyunOssUtil;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -58,7 +59,7 @@ public class ProductService {
     }
 
     public Page<Product> findProducts(int pageNumber, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, Sort.by("id").descending());
         org.springframework.data.domain.Page<ProductEntity> productEntities = productRepository.findAll(pageable);
         List<Product> products = productEntities.stream().map(ProductEntity::toProduct).collect(Collectors.toList());
         Page<Product> page = new Page<>();
