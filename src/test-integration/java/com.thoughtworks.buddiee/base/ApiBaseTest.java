@@ -2,7 +2,9 @@ package com.thoughtworks.buddiee.base;
 
 import com.thoughtworks.buddiee.BuddieeApplication;
 import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
+import io.restassured.module.mockmvc.specification.MockMvcRequestSpecification;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,5 +29,13 @@ public abstract class ApiBaseTest {
         RestAssured.port = this.port;
         RestAssuredMockMvc.enableLoggingOfRequestAndResponseIfValidationFails();
         RestAssuredMockMvc.webAppContextSetup(webApplicationContext);
+    }
+
+    protected MockMvcRequestSpecification givenMockMvc() {
+        RestAssuredMockMvc.enableLoggingOfRequestAndResponseIfValidationFails();
+        return RestAssuredMockMvc
+                .given()
+                .header("Accept", ContentType.JSON.withCharset("UTF-8"))
+                .header("Content-Type", ContentType.JSON.withCharset("UTF-8"));
     }
 }
