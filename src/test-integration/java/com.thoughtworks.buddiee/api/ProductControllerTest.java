@@ -1,23 +1,23 @@
 package com.thoughtworks.buddiee.api;
 
-import com.jayway.jsonpath.DocumentContext;
-import com.jayway.jsonpath.JsonPath;
 import com.thoughtworks.buddiee.base.ApiBaseTest;
 import com.thoughtworks.buddiee.dto.Product;
 import com.thoughtworks.buddiee.entity.ProductEntity;
 import com.thoughtworks.buddiee.repository.ProductRepository;
-import io.restassured.response.Response;
-import io.restassured.specification.RequestSpecification;
+import com.thoughtworks.buddiee.util.AliyunOssUtil;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 
-import static com.toomuchcoding.jsonassert.JsonAssertion.assertThatJson;
-import static io.restassured.RestAssured.given;
-import static org.assertj.core.api.Assertions.assertThat;
+import static com.thoughtworks.buddiee.service.ProductService.CAN_NOT_FIND_BASIC_INFO_OF_PRODUCT_WITH_ID_IS;
+import static org.hamcrest.core.Is.is;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 
 
 class ProductControllerTest extends ApiBaseTest {
@@ -25,73 +25,46 @@ class ProductControllerTest extends ApiBaseTest {
     @Autowired
     ProductRepository productRepository;
 
+    @Mock
+    AliyunOssUtil aliyunOssUtil;
+
 
     @BeforeEach
     void setUp() {
-        prepareProductData();
+        productRepository.deleteAll();
     }
 
-    private void prepareProductData() {
+    @Test
+    void should_return_product_info_when_find_product_existed() {
         productRepository.save(
                 ProductEntity.builder()
-                .id(1L)
-                .name("可乐")
-                .description("快乐水")
-                .imageUrl("http://####")
-                .price(new BigDecimal("2.5"))
-                .build()
-        );
-        productRepository.save(
-                ProductEntity.builder()
-                        .id(2L)
-                        .name("雪碧")
-                        .description("大声跟你逼逼")
+                        .name("可乐")
+                        .description("快乐水")
                         .imageUrl("http://####")
                         .price(new BigDecimal("2.5"))
                         .build()
         );
-        productRepository.save(
-                ProductEntity.builder()
-                        .id(3L)
-                        .name("脉动")
-                        .description("快乐水")
-                        .imageUrl("http://####")
-                        .price(new BigDecimal("4"))
-                        .build()
-        );
+        givenMockMvc()
+                .get("/products/{id}", 1)
+                .then()
+                .statusCode(200)
+                .body("name", is("可乐"));
+
     }
 
-    @Nested
-    class FindProductById {
-
-        @Test
-        void should_return_product_info_when_product_existed() {
-            RequestSpecification request = given().header("Content-Type", "application/json");
-
-            Response response = given().spec(request)
-                    .pathParam("id", 1)
-                    .get("products/{id}");
-
-            assertThat(response.statusCode()).isEqualTo(200);
-            DocumentContext parsedJson = JsonPath.parse(response.getBody().asString());
-            assertThatJson(parsedJson).field("['name']").isEqualTo("可乐");
-        }
-
-        @Test
-        void should_throw_exception_when_product_not_existed() {
-            RequestSpecification request = given().header("Content-Type", "application/json");
-
-            Response response = given().spec(request)
-                    .pathParam("id", 999)
-                    .get("products/{id}");
-
-            assertThat(response.statusCode()).isEqualTo(404);
-        }
+    @Test
+    void should_throw_exception_when_find_product_not_existed() {
+        givenMockMvc()
+                .get("/products/{id}", 1)
+                .then()
+                .statusCode(404)
+                .body("message", is(CAN_NOT_FIND_BASIC_INFO_OF_PRODUCT_WITH_ID_IS + "1"));
     }
+
 
 
     @Test
-    void should_return_product_info_when_create_product_success() {
+    void should_return_product_info_when_create_product_success() throws IOException {
         Product productRequest = Product.builder()
                 .name("元气森林")
                 .description("无糖饮料，好喝！")
@@ -99,100 +72,112 @@ class ProductControllerTest extends ApiBaseTest {
                 .price(new BigDecimal("4"))
                 .build();
 
-        RequestSpecification request = given().header("Content-Type", "application/json");
+        when(aliyunOssUtil.uploadBase64FileToAliyunOss(anyString(), anyString())).thenReturn("mock url");
 
-        Response response = given().spec(request)
+        givenMockMvc()
                 .body(productRequest)
-                .post("products");
+                .post("/products")
+                .then()
+                .statusCode(201)
+                .body("name", is("元气森林"));
 
-        assertThat(response.statusCode()).isEqualTo(201);
-        DocumentContext parsedJson = JsonPath.parse(response.getBody().asString());
-        assertThatJson(parsedJson).field("['name']").isEqualTo("元气森林");
-
-    }
-
-    @Nested
-    class DeleteProductById {
-
-        @Test
-        void should_delete_success_when_product_existed() {
-            RequestSpecification request = given().header("Content-Type", "application/json");
-
-            Response response = given().spec(request)
-                    .pathParam("id", 4)
-                    .delete("products/{id}");
-
-            assertThat(response.statusCode()).isEqualTo(204);
-        }
-
-        @Test
-        void should_delete_success_when_product_not_existed() {
-            RequestSpecification request = given().header("Content-Type", "application/json");
-
-            Response response = given().spec(request)
-                    .pathParam("id", 4)
-                    .delete("products/{id}");
-
-            assertThat(response.statusCode()).isEqualTo(404);
-        }
-    }
-
-    @Nested
-    class UpdateProductById {
-
-        @Test
-        void should_update_success_when_product_existed() {
-            Product productRequest = Product.builder()
-                    .name("元气森林")
-                    .description("无糖饮料，好喝！")
-                    .imageUrl("data:img/jpg;base64,iVBORw0KGgo")
-                    .price(new BigDecimal("4"))
-                    .build();
-
-            RequestSpecification request = given().header("Content-Type", "application/json");
-
-            Response response = given().spec(request)
-                    .pathParam("id", 3)
-                    .body(productRequest)
-                    .put("products/{id}");
-
-            assertThat(response.statusCode()).isEqualTo(200);
-            DocumentContext parsedJson = JsonPath.parse(response.getBody().asString());
-            assertThatJson(parsedJson).field("['name']").isEqualTo("元气森林");
-        }
-
-        @Test
-        void should_update_success_when_product_not_existed() {
-            Product productRequest = Product.builder()
-                    .name("元气森林")
-                    .description("无糖饮料，好喝！")
-                    .imageUrl("data:img/jpg;base64,iVBORw0KGgo")
-                    .price(new BigDecimal("4"))
-                    .build();
-
-            RequestSpecification request = given().header("Content-Type", "application/json");
-
-            Response response = given().spec(request)
-                    .pathParam("id", 4)
-                    .body(productRequest)
-                    .put("products/{id}");
-
-            assertThat(response.statusCode()).isEqualTo(404);
-        }
     }
 
     @Test
+    void should_delete_success_when_delete_product_existed() {
+        productRepository.save(
+                ProductEntity.builder()
+                        .name("可乐")
+                        .description("快乐水")
+                        .imageUrl("http://####.com/image")
+                        .price(new BigDecimal("2.5"))
+                        .build()
+        );
+        doNothing().when(aliyunOssUtil).deleteFile(anyString());
+        givenMockMvc()
+                .delete("/products/{id}", 1)
+                .then()
+                .statusCode(204);
+    }
+
+    @Test
+    void should_delete_success_when_delete_product_not_existed() {
+        givenMockMvc()
+                .delete("/products/{id}", 1)
+                .then()
+                .statusCode(404);
+    }
+
+
+    @Test
+    void should_update_success_when_update_product_existed() {
+        productRepository.save(
+                ProductEntity.builder()
+                        .name("可乐")
+                        .description("快乐水")
+                        .imageUrl("http://####")
+                        .price(new BigDecimal("2.5"))
+                        .build()
+        );
+        Product productRequest = Product.builder()
+                .name("元气森林")
+                .description("无糖饮料，好喝！")
+                .imageUrl("data:img/jpg;base64,iVBORw0KGgo")
+                .price(new BigDecimal("4"))
+                .build();
+
+        givenMockMvc()
+                .body(productRequest)
+                .put("/products/{id}", 1)
+                .then()
+                .statusCode(200)
+                .body("name", is("元气森林"));
+    }
+
+    @Test
+    void should_update_success_when_update_product_not_existed() {
+        Product productRequest = Product.builder()
+                .name("元气森林")
+                .description("无糖饮料，好喝！")
+                .imageUrl("data:img/jpg;base64,iVBORw0KGgo")
+                .price(new BigDecimal("4"))
+                .build();
+
+        givenMockMvc()
+                .body(productRequest)
+                .put("/products/{id}", 1)
+                .then()
+                .statusCode(404);
+    }
+
+
+    @Test
     void should_return_products_when_find_products_by_page_number_and_page_size() {
-        RequestSpecification request = given().header("Content-Type", "application/json");
-
-        Response response = given().spec(request)
-                .queryParam("pageNumber", 1)
-                .queryParam("pageSize", 10)
-                .get("products");
-
-        assertThat(response.statusCode()).isEqualTo(200);
-        DocumentContext parsedJson = JsonPath.parse(response.getBody().asString());
-        assertThatJson(parsedJson).field("['data']").hasSize(3);
+        productRepository.save(
+                ProductEntity.builder()
+                        .name("可乐")
+                        .description("快乐水")
+                        .imageUrl("http://####")
+                        .price(new BigDecimal("2.5"))
+                        .build()
+        );
+        productRepository.save(
+                ProductEntity.builder()
+                        .name("雪碧")
+                        .description("大声你的逼逼")
+                        .imageUrl("http://####")
+                        .price(new BigDecimal("2.5"))
+                        .build()
+        );
+        givenMockMvc()
+                .param("pageNumber", 1)
+                .param("pageSize", 10)
+                .get("/products")
+                .then()
+                .statusCode(200)
+                .body("currentPage", is(1))
+                .body("totalPage", is(1))
+                .body("data[0].name", is("可乐"));
     }
 
 }
