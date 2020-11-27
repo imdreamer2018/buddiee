@@ -35,11 +35,14 @@ dependencies {
     compile 'mysql:mysql-connector-java'
     compile group: 'org.flywaydb', name: 'flyway-core', version: '5.2.4'
     testCompile group: 'com.h2database', name: 'h2', version: '1.4.197'
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
+    compileOnly 'org.projectlombok:lombok:1.18.4'
+    annotationProcessor 'org.projectlombok:lombok:1.18.4'
+    testImplementation "ch.vorburger.mariaDB4j:mariaDB4j:2.3.0"
+    testImplementation "org.mariadb.jdbc:mariadb-java-client:2.2.5"
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
+    testAnnotationProcessor("org.projectlombok:lombok:1.18.4")
 }
 
 test {
