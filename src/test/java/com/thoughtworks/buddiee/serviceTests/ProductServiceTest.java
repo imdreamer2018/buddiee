@@ -4,6 +4,7 @@ import com.thoughtworks.buddiee.dto.Page;
 import com.thoughtworks.buddiee.dto.ProductDTO;
 import com.thoughtworks.buddiee.entity.ProductEntity;
 import com.thoughtworks.buddiee.exception.ResourceNotFoundException;
+import com.thoughtworks.buddiee.mapper.ProductMapper;
 import com.thoughtworks.buddiee.repository.ProductRepository;
 import com.thoughtworks.buddiee.service.ProductService;
 import com.thoughtworks.buddiee.util.AliyunOssUtil;
@@ -11,6 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mapstruct.factory.Mappers;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageImpl;
@@ -47,6 +49,8 @@ class ProductServiceTest {
     @Mock
     static AliyunOssUtil aliyunOssUtil;
 
+    private final ProductMapper productMapper = Mappers.getMapper(ProductMapper.class);
+
     private static ProductDTO productDTO;
 
     private static ProductEntity productEntity;
@@ -63,7 +67,7 @@ class ProductServiceTest {
                 .imageUrl("mock image url.com/path")
                 .price(new BigDecimal(10))
                 .build();
-        productEntity = productDTO.toProductEntity();
+        productEntity = productMapper.productDtoToProductEntity(productDTO);
         productEntities.add(productEntity);
 
     }

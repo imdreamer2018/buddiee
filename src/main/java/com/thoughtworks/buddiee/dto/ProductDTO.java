@@ -1,6 +1,5 @@
 package com.thoughtworks.buddiee.dto;
 
-import com.thoughtworks.buddiee.entity.ProductEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,14 +25,4 @@ public class ProductDTO {
     @NotNull(message = "product price can not empty")
     @Min(value = 0, message = "product price must be greater than 0")
     private BigDecimal price;
-
-    public ProductEntity toProductEntity() {
-        return ProductEntity.builder()
-                .id(this.getId())
-                .name(this.getName())
-                .description(this.getDescription())
-                .imageUrl(this.getImageUrl())
-                .price(this.getPrice())
-                .build();
-    }
 }

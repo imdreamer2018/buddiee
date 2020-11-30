@@ -44,6 +44,9 @@ dependencies {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
     testAnnotationProcessor("org.projectlombok:lombok:1.18.4")
+    implementation "org.mapstruct:mapstruct-jdk8:1.2.0.Final"
+    annotationProcessor "org.mapstruct:mapstruct-processor:1.2.0.Final"
+    testAnnotationProcessor "org.mapstruct:mapstruct-processor:1.2.0.Final"
 }
 
 test {
