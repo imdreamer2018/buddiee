@@ -25,7 +25,7 @@ import java.io.IOException;
 
 @RestController
 @Validated
-@RequestMapping(value = "/products")
+@RequestMapping(value = "/api/products")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class ProductController {
 
