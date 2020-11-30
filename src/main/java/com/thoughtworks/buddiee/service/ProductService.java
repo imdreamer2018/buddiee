@@ -1,7 +1,7 @@
 package com.thoughtworks.buddiee.service;
 
 import com.thoughtworks.buddiee.dto.Page;
-import com.thoughtworks.buddiee.dto.Product;
+import com.thoughtworks.buddiee.dto.ProductDTO;
 import com.thoughtworks.buddiee.entity.ProductEntity;
 import com.thoughtworks.buddiee.exception.ResourceNotFoundException;
 import com.thoughtworks.buddiee.repository.ProductRepository;
@@ -25,10 +25,10 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final AliyunOssUtil aliyunOssUtil;
 
-    public Product createProduct(Product product) throws IOException {
-        String url = aliyunOssUtil.uploadBase64FileToAliyunOss("image/product/", product.getImageUrl());
-        product.setImageUrl(url);
-        ProductEntity productEntity = product.toProductEntity();
+    public ProductDTO createProduct(ProductDTO productDTO) throws IOException {
+        String url = aliyunOssUtil.uploadBase64FileToAliyunOss("image/product/", productDTO.getImageUrl());
+        productDTO.setImageUrl(url);
+        ProductEntity productEntity = productDTO.toProductEntity();
         productRepository.save(productEntity);
         return productEntity.toProduct();
     }
@@ -41,28 +41,28 @@ public class ProductService {
         productRepository.deleteById(productId);
     }
 
-    public Product findProduct(Long productId) {
+    public ProductDTO findProduct(Long productId) {
         ProductEntity productEntity = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException(CAN_NOT_FIND_BASIC_INFO_OF_PRODUCT_WITH_ID_IS + productId));
         return productEntity.toProduct();
     }
 
-    public Product updateProduct(Long productId, Product updateProduct) {
+    public ProductDTO updateProduct(Long productId, ProductDTO updateProductDTO) {
         ProductEntity productEntity = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException(CAN_NOT_FIND_BASIC_INFO_OF_PRODUCT_WITH_ID_IS + productId));
-        updateProduct.setId(productEntity.getId());
-        productRepository.save(updateProduct.toProductEntity());
-        return updateProduct;
+        updateProductDTO.setId(productEntity.getId());
+        productRepository.save(updateProductDTO.toProductEntity());
+        return updateProductDTO;
     }
 
-    public Page<Product> findProducts(int pageNumber, int pageSize) {
+    public Page<ProductDTO> findProducts(int pageNumber, int pageSize) {
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, Sort.by("id").descending());
         org.springframework.data.domain.Page<ProductEntity> productEntities = productRepository.findAll(pageable);
-        List<Product> products = productEntities.stream().map(ProductEntity::toProduct).collect(Collectors.toList());
-        Page<Product> page = new Page<>();
+        List<ProductDTO> productDTOS = productEntities.stream().map(ProductEntity::toProduct).collect(Collectors.toList());
+        Page<ProductDTO> page = new Page<>();
         page.setCurrentPage(pageNumber);
         page.setTotalPage(productEntities.getTotalPages());
-        page.setData(products);
+        page.setData(productDTOS);
         return page;
     }
 }

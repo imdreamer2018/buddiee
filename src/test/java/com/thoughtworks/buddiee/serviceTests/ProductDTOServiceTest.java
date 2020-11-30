@@ -1,7 +1,7 @@
 package com.thoughtworks.buddiee.serviceTests;
 
 import com.thoughtworks.buddiee.dto.Page;
-import com.thoughtworks.buddiee.dto.Product;
+import com.thoughtworks.buddiee.dto.ProductDTO;
 import com.thoughtworks.buddiee.entity.ProductEntity;
 import com.thoughtworks.buddiee.exception.ResourceNotFoundException;
 import com.thoughtworks.buddiee.repository.ProductRepository;
@@ -36,7 +36,7 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 @ExtendWith(MockitoExtension.class)
-public class ProductServiceTest {
+class ProductServiceTest {
 
     public static final String MOCK_PRODUCT_NAME = "mock product name";
     private static ProductService productService;
@@ -47,7 +47,7 @@ public class ProductServiceTest {
     @Mock
     static AliyunOssUtil aliyunOssUtil;
 
-    private static Product product;
+    private static ProductDTO productDTO;
 
     private static ProductEntity productEntity;
 
@@ -57,37 +57,37 @@ public class ProductServiceTest {
     void setUp() {
         initMocks(this);
         productService = new ProductService(productRepository, aliyunOssUtil);
-        product = Product.builder()
+        productDTO = ProductDTO.builder()
                 .name(MOCK_PRODUCT_NAME)
                 .description("mock product description")
                 .imageUrl("mock image url.com/path")
                 .price(new BigDecimal(10))
                 .build();
-        productEntity = product.toProductEntity();
+        productEntity = productDTO.toProductEntity();
         productEntities.add(productEntity);
 
     }
 
     @Nested
-    class CreateProduct {
+    class CreateProductDTO {
 
         @Nested
         class WhenCreateSuccess {
 
             @Test
             void should_return_product_info() throws IOException {
-                when(aliyunOssUtil.uploadBase64FileToAliyunOss(anyString(), anyString())).thenReturn(product.getImageUrl());
-                Product productResponse = productService.createProduct(product);
-                assertEquals(MOCK_PRODUCT_NAME, productResponse.getName());
+                when(aliyunOssUtil.uploadBase64FileToAliyunOss(anyString(), anyString())).thenReturn(productDTO.getImageUrl());
+                ProductDTO productDTOResponse = productService.createProduct(productDTO);
+                assertEquals(MOCK_PRODUCT_NAME, productDTOResponse.getName());
             }
         }
     }
 
     @Nested
-    class DeleteProduct {
+    class DeleteProductDTO {
 
         @Nested
-        class WhenProductIdIsExisted {
+        class WhenProductDTOIdIsExisted {
 
             @Test
             void should_delete_success() {
@@ -99,7 +99,7 @@ public class ProductServiceTest {
         }
 
         @Nested
-        class WhenProductIdIsNotExisted {
+        class WhenProductDTOIdIsNotExisted {
 
             @Test
             void should_throw_resource_not_found_exception() {
@@ -111,21 +111,21 @@ public class ProductServiceTest {
     }
 
     @Nested
-    class FindProduct {
+    class FindProductDTO {
 
         @Nested
-        class WhenProductIdIsExisted {
+        class WhenProductDTOIdIsExisted {
 
             @Test
             void should_return_product_info() {
                 when(productRepository.findById(1L)).thenReturn(Optional.of(productEntity));
-                Product product = productService.findProduct(1L);
-                assertEquals(MOCK_PRODUCT_NAME, product.getName());
+                ProductDTO productDTO = productService.findProduct(1L);
+                assertEquals(MOCK_PRODUCT_NAME, productDTO.getName());
             }
         }
 
         @Nested
-        class WhenProductIdIsNotExisted {
+        class WhenProductDTOIdIsNotExisted {
 
             @Test
             void should_throw_resource_not_found_exception() {
@@ -137,26 +137,26 @@ public class ProductServiceTest {
     }
 
     @Nested
-    class UpdateProduct {
+    class UpdateProductDTO {
 
         @Nested
-        class WhenProductIdIsExisted {
+        class WhenProductDTOIdIsExisted {
 
             @Test
             void should_return_product_info() {
                 when(productRepository.findById(1L)).thenReturn(Optional.of(productEntity));
-                Product updateProduct = productService.updateProduct(1L, product);
-                assertEquals(MOCK_PRODUCT_NAME, updateProduct.getName());
+                ProductDTO updateProductDTO = productService.updateProduct(1L, productDTO);
+                assertEquals(MOCK_PRODUCT_NAME, updateProductDTO.getName());
             }
         }
 
         @Nested
-        class WhenProductIdIsNotExisted {
+        class WhenProductDTOIdIsNotExisted {
 
             @Test
             void should_throw_resource_not_found_exception() {
                 when(productRepository.findById(1L)).thenReturn(Optional.empty());
-                ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> productService.updateProduct(1L, product));
+                ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> productService.updateProduct(1L, productDTO));
                 assertEquals(CAN_NOT_FIND_BASIC_INFO_OF_PRODUCT_WITH_ID_IS + 1L, exception.getMessage());
             }
         }
@@ -170,7 +170,7 @@ public class ProductServiceTest {
             Pageable pageable = PageRequest.of(0, 1, Sort.by("id").descending());
             org.springframework.data.domain.Page<ProductEntity> productsPage = new PageImpl<>(productEntities);
             when(productRepository.findAll(pageable)).thenReturn(productsPage);
-            Page<Product> products = productService.findProducts(1, 1);
+            Page<ProductDTO> products = productService.findProducts(1, 1);
             assertEquals(1, products.getData().size());
         }
     }

@@ -1,7 +1,7 @@
 package com.thoughtworks.buddiee.api;
 
 import com.thoughtworks.buddiee.base.ApiBaseTest;
-import com.thoughtworks.buddiee.dto.Product;
+import com.thoughtworks.buddiee.dto.ProductDTO;
 import com.thoughtworks.buddiee.entity.ProductEntity;
 import com.thoughtworks.buddiee.repository.ProductRepository;
 import com.thoughtworks.buddiee.util.AliyunOssUtil;
@@ -65,7 +65,7 @@ class ProductControllerTest extends ApiBaseTest {
 
     @Test
     void should_return_product_info_when_create_product_success() throws IOException {
-        Product productRequest = Product.builder()
+        ProductDTO productDTORequest = ProductDTO.builder()
                 .name("元气森林")
                 .description("无糖饮料，好喝！")
                 .imageUrl("data:img/jpg;base64,iVBORw0KGgo")
@@ -75,7 +75,7 @@ class ProductControllerTest extends ApiBaseTest {
         when(aliyunOssUtil.uploadBase64FileToAliyunOss(anyString(), anyString())).thenReturn("mock url");
 
         givenMockMvc()
-                .body(productRequest)
+                .body(productDTORequest)
                 .post("/products")
                 .then()
                 .statusCode(201)
@@ -119,7 +119,7 @@ class ProductControllerTest extends ApiBaseTest {
                         .price(new BigDecimal("2.5"))
                         .build()
         );
-        Product productRequest = Product.builder()
+        ProductDTO productDTORequest = ProductDTO.builder()
                 .name("元气森林")
                 .description("无糖饮料，好喝！")
                 .imageUrl("data:img/jpg;base64,iVBORw0KGgo")
@@ -127,7 +127,7 @@ class ProductControllerTest extends ApiBaseTest {
                 .build();
 
         givenMockMvc()
-                .body(productRequest)
+                .body(productDTORequest)
                 .put("/products/{id}", 1)
                 .then()
                 .statusCode(200)
@@ -136,7 +136,7 @@ class ProductControllerTest extends ApiBaseTest {
 
     @Test
     void should_update_success_when_update_product_not_existed() {
-        Product productRequest = Product.builder()
+        ProductDTO productDTORequest = ProductDTO.builder()
                 .name("元气森林")
                 .description("无糖饮料，好喝！")
                 .imageUrl("data:img/jpg;base64,iVBORw0KGgo")
@@ -144,7 +144,7 @@ class ProductControllerTest extends ApiBaseTest {
                 .build();
 
         givenMockMvc()
-                .body(productRequest)
+                .body(productDTORequest)
                 .put("/products/{id}", 1)
                 .then()
                 .statusCode(404);

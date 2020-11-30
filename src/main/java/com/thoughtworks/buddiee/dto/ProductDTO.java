@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @Data
 @Builder
-public class Product {
+public class ProductDTO {
 
     private Long id;
     @NotNull(message = "product name can not empty")

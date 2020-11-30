@@ -1,7 +1,7 @@
 package com.thoughtworks.buddiee.controller;
 
 import com.thoughtworks.buddiee.dto.Page;
-import com.thoughtworks.buddiee.dto.Product;
+import com.thoughtworks.buddiee.dto.ProductDTO;
 import com.thoughtworks.buddiee.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,8 +34,8 @@ public class ProductController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Product createProduct(@RequestBody @Valid Product product) throws IOException {
-        return productService.createProduct(product);
+    public ProductDTO createProduct(@RequestBody @Valid ProductDTO productDTO) throws IOException {
+        return productService.createProduct(productDTO);
     }
 
     @DeleteMapping("/{id}")
@@ -48,7 +48,7 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public Product findProduct(
+    public ProductDTO findProduct(
             @NotNull(message = "product id can not be null")
             @Min(value = 1, message = PRODUCT_ID_MUSE_BE_NUMBER_AND_GREATER_THAN_1)
             @PathVariable(name = "id") Long productId) {
@@ -56,16 +56,16 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    public Product updateProduct(
+    public ProductDTO updateProduct(
             @NotNull(message = "product id can not be null")
             @Min(value = 1, message = PRODUCT_ID_MUSE_BE_NUMBER_AND_GREATER_THAN_1)
             @PathVariable(name = "id") Long productId,
-            @RequestBody @Valid Product updateProduct) {
-        return productService.updateProduct(productId, updateProduct);
+            @RequestBody @Valid ProductDTO updateProductDTO) {
+        return productService.updateProduct(productId, updateProductDTO);
     }
 
     @GetMapping
-    public Page<Product> findProducts(
+    public Page<ProductDTO> findProducts(
             @Min(value = 1, message = PRODUCT_ID_MUSE_BE_NUMBER_AND_GREATER_THAN_1)
             @RequestParam(required = false, defaultValue = "1") int pageNumber,
             @Min(value = 1, message = PRODUCT_ID_MUSE_BE_NUMBER_AND_GREATER_THAN_1)
