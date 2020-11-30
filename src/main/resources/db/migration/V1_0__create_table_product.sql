@@ -3,5 +3,5 @@ create table product (
     name varchar(255) not null,
     description varchar(255) not null,
     image_url varchar(255) not null,
-    price decimal not null
+    price decimal(10, 2) not null
 ) engine=InnoDB default charset=utf8;
