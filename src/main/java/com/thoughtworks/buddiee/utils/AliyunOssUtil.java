@@ -1,4 +1,4 @@
-package com.thoughtworks.buddiee.util;
+package com.thoughtworks.buddiee.utils;
 
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
