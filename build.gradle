@@ -35,6 +35,8 @@ dependencies {
     implementation 'com.toomuchcoding.jsonassert:jsonassert:0.4.14'
     compile 'mysql:mysql-connector-java'
     compile group: 'org.flywaydb', name: 'flyway-core', version: '5.2.4'
+    implementation 'redis.clients:jedis:3.3.0'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis:2.4.0'
     testCompile group: 'com.h2database', name: 'h2', version: '1.4.197'
     compileOnly 'org.projectlombok:lombok:1.18.4'
     annotationProcessor 'org.projectlombok:lombok:1.18.4'

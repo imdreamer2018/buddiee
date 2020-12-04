@@ -15,6 +15,17 @@ spring:
   flyway:
     enabled: true
     locations: classpath:db/migration
+  redis:
+    database: 0
+    host: ${REDIS_URL:127.0.0.1}
+    port: 6379
+    jedis:
+      pool:
+        max-active: 8
+        max-wait: -1
+        max-idle: 8
+        min-idle: 1
+    timeout: 100
 logging:
   level:
     org:
