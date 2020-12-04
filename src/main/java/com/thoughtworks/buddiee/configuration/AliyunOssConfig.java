@@ -1,4 +1,4 @@
-package com.thoughtworks.buddiee.config;
+package com.thoughtworks.buddiee.configuration;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -2,7 +2,7 @@ package com.thoughtworks.buddiee.utils;
 
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
-import com.thoughtworks.buddiee.config.AliyunOssConfig;
+import com.thoughtworks.buddiee.configuration.AliyunOssConfig;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
