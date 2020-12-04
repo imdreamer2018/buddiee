@@ -7,7 +7,7 @@ import com.thoughtworks.buddiee.exception.ResourceNotFoundException;
 import com.thoughtworks.buddiee.mapper.ProductMapper;
 import com.thoughtworks.buddiee.repository.ProductRepository;
 import com.thoughtworks.buddiee.service.ProductService;
-import com.thoughtworks.buddiee.util.AliyunOssUtil;
+import com.thoughtworks.buddiee.utils.AliyunOssUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;

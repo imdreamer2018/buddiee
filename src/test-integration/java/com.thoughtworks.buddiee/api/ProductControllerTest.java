@@ -4,7 +4,7 @@ import com.thoughtworks.buddiee.base.ApiBaseTest;
 import com.thoughtworks.buddiee.dto.ProductDTO;
 import com.thoughtworks.buddiee.entity.ProductEntity;
 import com.thoughtworks.buddiee.repository.ProductRepository;
-import com.thoughtworks.buddiee.util.AliyunOssUtil;
+import com.thoughtworks.buddiee.utils.AliyunOssUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;

@@ -6,7 +6,7 @@ import com.thoughtworks.buddiee.entity.ProductEntity;
 import com.thoughtworks.buddiee.exception.ResourceNotFoundException;
 import com.thoughtworks.buddiee.mapper.ProductMapper;
 import com.thoughtworks.buddiee.repository.ProductRepository;
-import com.thoughtworks.buddiee.util.AliyunOssUtil;
+import com.thoughtworks.buddiee.utils.AliyunOssUtil;
 import lombok.RequiredArgsConstructor;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
