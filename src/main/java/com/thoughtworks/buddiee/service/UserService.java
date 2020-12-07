@@ -24,14 +24,14 @@ public class UserService {
     }
 
     public UserDTO registerUser(UserDTO userDTO) {
-        if (userRepository.findUserByUsername(userDTO.getUsername()).isPresent() &&
+        if (userRepository.findUserByUsername(userDTO.getUsername()).isPresent() ||
             userRepository.findUserByEmail(userDTO.getEmail()).isPresent())
             throw new BadRequestException("the user name have been register!");
         User user = User.builder()
                 .username(userDTO.getUsername())
                 .email(userDTO.getEmail())
                 .password(passwordEncoder.encode(userDTO.getPassword()))
-                .role(!userDTO.getRole().isEmpty() ? "USER" : userDTO.getRole())
+                .role(userDTO.getRole() == null ? "USER" : userDTO.getRole())
                 .build();
         userRepository.save(user);
         return userMapper.userToUserDto(user);
