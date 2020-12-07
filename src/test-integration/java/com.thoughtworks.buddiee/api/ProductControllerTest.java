@@ -22,6 +22,7 @@ import static org.mockito.Mockito.when;
 
 class ProductControllerTest extends ApiBaseTest {
 
+    public static final String API_PRODUCTS = "/api/products";
     @Autowired
     ProductRepository productRepository;
 
@@ -45,7 +46,7 @@ class ProductControllerTest extends ApiBaseTest {
                         .build()
         );
         givenMockMvc()
-                .get("/products/{id}", 1)
+                .get(API_PRODUCTS + "/{id}", 1)
                 .then()
                 .statusCode(200)
                 .body("name", is("可乐"));
@@ -55,7 +56,7 @@ class ProductControllerTest extends ApiBaseTest {
     @Test
     void should_throw_exception_when_find_product_not_existed() {
         givenMockMvc()
-                .get("/products/{id}", 1)
+                .get(API_PRODUCTS + "/{id}", 1)
                 .then()
                 .statusCode(404)
                 .body("message", is(CAN_NOT_FIND_BASIC_INFO_OF_PRODUCT_WITH_ID_IS + "1"));
@@ -76,7 +77,7 @@ class ProductControllerTest extends ApiBaseTest {
 
         givenMockMvc()
                 .body(productDTORequest)
-                .post("/products")
+                .post(API_PRODUCTS)
                 .then()
                 .statusCode(201)
                 .body("name", is("元气森林"));
@@ -95,7 +96,7 @@ class ProductControllerTest extends ApiBaseTest {
         );
         doNothing().when(aliyunOssUtil).deleteFile(anyString());
         givenMockMvc()
-                .delete("/products/{id}", 1)
+                .delete(API_PRODUCTS + "/{id}", 1)
                 .then()
                 .statusCode(204);
     }
@@ -103,7 +104,7 @@ class ProductControllerTest extends ApiBaseTest {
     @Test
     void should_delete_success_when_delete_product_not_existed() {
         givenMockMvc()
-                .delete("/products/{id}", 1)
+                .delete(API_PRODUCTS + "/{id}", 1)
                 .then()
                 .statusCode(404);
     }
@@ -128,7 +129,7 @@ class ProductControllerTest extends ApiBaseTest {
 
         givenMockMvc()
                 .body(productDTORequest)
-                .put("/products/{id}", 1)
+                .put(API_PRODUCTS + "/{id}", 1)
                 .then()
                 .statusCode(200)
                 .body("name", is("元气森林"));
@@ -145,7 +146,7 @@ class ProductControllerTest extends ApiBaseTest {
 
         givenMockMvc()
                 .body(productDTORequest)
-                .put("/products/{id}", 1)
+                .put(API_PRODUCTS + "/{id}", 1)
                 .then()
                 .statusCode(404);
     }
@@ -172,7 +173,7 @@ class ProductControllerTest extends ApiBaseTest {
         givenMockMvc()
                 .param("pageNumber", 1)
                 .param("pageSize", 10)
-                .get("/products")
+                .get(API_PRODUCTS)
                 .then()
                 .statusCode(200)
                 .body("currentPage", is(1))
