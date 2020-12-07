@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.test.context.support.WithMockUser;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -65,6 +66,7 @@ class ProductControllerTest extends ApiBaseTest {
 
 
     @Test
+    @WithMockUser(username = "mock@tw.com", password = "123")
     void should_return_product_info_when_create_product_success() throws IOException {
         ProductDTO productDTORequest = ProductDTO.builder()
                 .name("元气森林")
@@ -85,6 +87,7 @@ class ProductControllerTest extends ApiBaseTest {
     }
 
     @Test
+    @WithMockUser(username = "mock@tw.com", password = "123", roles = {"ADMIN"} )
     void should_delete_success_when_delete_product_existed() {
         productRepository.save(
                 ProductEntity.builder()
@@ -102,6 +105,7 @@ class ProductControllerTest extends ApiBaseTest {
     }
 
     @Test
+    @WithMockUser(username = "mock@tw.com", password = "123", roles = {"ADMIN"} )
     void should_delete_success_when_delete_product_not_existed() {
         givenMockMvc()
                 .delete(API_PRODUCTS + "/{id}", 1)
@@ -111,6 +115,7 @@ class ProductControllerTest extends ApiBaseTest {
 
 
     @Test
+    @WithMockUser(username = "mock@tw.com", password = "123")
     void should_update_success_when_update_product_existed() {
         productRepository.save(
                 ProductEntity.builder()
@@ -136,6 +141,7 @@ class ProductControllerTest extends ApiBaseTest {
     }
 
     @Test
+    @WithMockUser(username = "mock@tw.com", password = "123")
     void should_update_success_when_update_product_not_existed() {
         ProductDTO productDTORequest = ProductDTO.builder()
                 .name("元气森林")
