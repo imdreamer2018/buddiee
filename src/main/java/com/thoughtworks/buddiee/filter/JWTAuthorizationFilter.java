@@ -24,6 +24,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
         this.redisService = redisService;
     }
 
+    @Override
     public void doFilterInternal(HttpServletRequest request,
                                  HttpServletResponse response,
                                  FilterChain chain) throws IOException, ServletException {
@@ -33,6 +34,10 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
             return;
         }
         String token = tokenHeader.replace(JwtTokenUtils.TOKEN_PREFIX, "");
+        if (JwtTokenUtils.isExpiration(token)) {
+            chain.doFilter(request, response);
+            return;
+        }
         String username = JwtTokenUtils.getUsername(token);
         String redisToken = (String) redisService.get("Authentication_" + username);
         // 如果请求头中没有Authorization信息则直接放行了
