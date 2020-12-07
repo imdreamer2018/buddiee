@@ -1,8 +1,11 @@
 package com.thoughtworks.buddiee.utils;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -23,6 +26,8 @@ public class JwtTokenUtils {
 
     // 添加角色的key
     private static final String ROLE_CLAIMS = "role";
+
+    private static Logger logger = LoggerFactory.getLogger(JwtTokenUtils.class);
 
     private JwtTokenUtils() {
     }
@@ -53,6 +58,16 @@ public class JwtTokenUtils {
 
     //是否已过期
     public static boolean isExpiration(String token) {
+        try {
+            Jwts.parser()
+                    .setSigningKey(SECRET)
+                    .parseClaimsJws(token)
+                    .getBody()
+                    .getSubject();
+        } catch (ExpiredJwtException e) {
+            logger.error("token have been expiration");
+            return true;
+        }
         return getTokenBody(token).getExpiration().before(new Date());
     }
 
