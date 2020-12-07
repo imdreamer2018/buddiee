@@ -14,13 +14,13 @@ public class RedisService {
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
 
-    ValueOperations<String, Object> vo = redisTemplate.opsForValue();
-
     public void set(String key, Object value) {
+        ValueOperations<String, Object> vo = redisTemplate.opsForValue();
         vo.set(key, value);
     }
 
     public Object get(String key) {
+        ValueOperations<String, Object> vo = redisTemplate.opsForValue();
         return vo.get(key);
     }
 
@@ -30,10 +30,12 @@ public class RedisService {
 
     public void clearRedis() {
         Set<String> keys = redisTemplate.keys("" + "*");
+        assert keys != null;
         redisTemplate.delete(keys);
     }
 
     public void setTimeout(String key, Object value, int minute) {
+        ValueOperations<String, Object> vo = redisTemplate.opsForValue();
         vo.set(key, value, minute, TimeUnit.MINUTES);
     }
 
