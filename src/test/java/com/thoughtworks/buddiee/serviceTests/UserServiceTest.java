@@ -1,6 +1,7 @@
 package com.thoughtworks.buddiee.serviceTests;
 
-import com.thoughtworks.buddiee.dto.UserDTO;
+import com.thoughtworks.buddiee.dto.UserRequestDTO;
+import com.thoughtworks.buddiee.dto.UserResponseDTO;
 import com.thoughtworks.buddiee.mapper.UserMapper;
 import com.thoughtworks.buddiee.repository.UserRepository;
 import com.thoughtworks.buddiee.service.UserService;
@@ -39,14 +40,14 @@ class UserServiceTest {
 
     @Test
     void should_return_user_info_when_register_user_success() {
-        UserDTO userDTO = UserDTO.builder()
+        UserRequestDTO userRequestDTO = UserRequestDTO.builder()
                 .username("mock name")
                 .email("mock@tw.com")
                 .password("password")
                 .build();
-        when(userRepository.findUserByUsername(userDTO.getUsername())).thenReturn(Optional.empty());
-        when(userRepository.findUserByEmail(userDTO.getEmail())).thenReturn(Optional.empty());
-        UserDTO userRsp = userService.registerUser(userDTO);
+        when(userRepository.findUserByUsername(userRequestDTO.getUsername())).thenReturn(Optional.empty());
+        when(userRepository.findUserByEmail(userRequestDTO.getEmail())).thenReturn(Optional.empty());
+        UserResponseDTO userRsp = userService.registerUser(userRequestDTO);
         assertEquals("USER", userRsp.getRole());
         assertEquals("mock name", userRsp.getUsername());
 

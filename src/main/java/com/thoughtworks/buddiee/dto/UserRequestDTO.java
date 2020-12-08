@@ -1,6 +1,5 @@
 package com.thoughtworks.buddiee.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,7 +12,7 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @Data
 @Builder
-public class UserDTO {
+public class UserRequestDTO {
 
     @NotNull
     private String username;
@@ -23,7 +22,6 @@ public class UserDTO {
     private String email;
 
     @NotNull
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     private String role;

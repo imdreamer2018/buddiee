@@ -1,6 +1,7 @@
 package com.thoughtworks.buddiee.controller;
 
-import com.thoughtworks.buddiee.dto.UserDTO;
+import com.thoughtworks.buddiee.dto.UserRequestDTO;
+import com.thoughtworks.buddiee.dto.UserResponseDTO;
 import com.thoughtworks.buddiee.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,7 +24,7 @@ public class UserController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = "/register")
-    public UserDTO registerUser(@RequestBody @Valid UserDTO userDTO) {
-        return userService.registerUser(userDTO);
+    public UserResponseDTO registerUser(@RequestBody @Valid UserRequestDTO userRequestDTO) {
+        return userService.registerUser(userRequestDTO);
     }
 }

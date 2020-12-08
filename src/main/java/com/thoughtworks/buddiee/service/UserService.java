@@ -1,6 +1,7 @@
 package com.thoughtworks.buddiee.service;
 
-import com.thoughtworks.buddiee.dto.UserDTO;
+import com.thoughtworks.buddiee.dto.UserRequestDTO;
+import com.thoughtworks.buddiee.dto.UserResponseDTO;
 import com.thoughtworks.buddiee.entity.User;
 import com.thoughtworks.buddiee.exception.BadRequestException;
 import com.thoughtworks.buddiee.mapper.UserMapper;
@@ -23,17 +24,17 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public UserDTO registerUser(UserDTO userDTO) {
-        if (userRepository.findUserByUsername(userDTO.getUsername()).isPresent() ||
-            userRepository.findUserByEmail(userDTO.getEmail()).isPresent())
+    public UserResponseDTO registerUser(UserRequestDTO userRequestDTO) {
+        if (userRepository.findUserByUsername(userRequestDTO.getUsername()).isPresent() ||
+            userRepository.findUserByEmail(userRequestDTO.getEmail()).isPresent())
             throw new BadRequestException("the user name have been register!");
         User user = User.builder()
-                .username(userDTO.getUsername())
-                .email(userDTO.getEmail())
-                .password(passwordEncoder.encode(userDTO.getPassword()))
-                .role(userDTO.getRole() == null ? "USER" : userDTO.getRole())
+                .username(userRequestDTO.getUsername())
+                .email(userRequestDTO.getEmail())
+                .password(passwordEncoder.encode(userRequestDTO.getPassword()))
+                .role(userRequestDTO.getRole() == null ? "USER" : userRequestDTO.getRole())
                 .build();
         userRepository.save(user);
-        return userMapper.userToUserDto(user);
+        return userMapper.userToUserResponseDto(user);
     }
 }
