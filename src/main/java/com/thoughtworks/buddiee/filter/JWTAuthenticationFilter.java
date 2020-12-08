@@ -24,7 +24,7 @@ import java.io.PrintWriter;
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     public static final int EXPIRATION_WEEK_TIME = 10080;
-    public static final int EXPIRATION_DAY_TIME = 1440;
+    public static final int EXPIRATION_HOUR_TIME = 60;
     private final ThreadLocal<Boolean> rememberMe = new ThreadLocal<>();
     private final AuthenticationManager authenticationManager;
 
@@ -69,7 +69,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         redisService.setTimeout(
                 "Authentication_" + jwtUser.getUsername(),
                 token,
-                isRememberMe ? EXPIRATION_WEEK_TIME : EXPIRATION_DAY_TIME);
+                isRememberMe ? EXPIRATION_WEEK_TIME : EXPIRATION_HOUR_TIME);
 
         response.setHeader("token", JwtTokenUtils.TOKEN_PREFIX + token);
         response.setContentType("application/json");
