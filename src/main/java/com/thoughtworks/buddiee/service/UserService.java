@@ -7,8 +7,11 @@ import com.thoughtworks.buddiee.exception.BadRequestException;
 import com.thoughtworks.buddiee.mapper.UserMapper;
 import com.thoughtworks.buddiee.repository.UserRepository;
 import org.mapstruct.factory.Mappers;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import static com.thoughtworks.buddiee.filter.JWTAuthenticationFilter.REDIS_AUTHENTICATION_HEADER;
 
 @Service
 public class UserService {
@@ -19,9 +22,14 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    public UserService(PasswordEncoder passwordEncoder, UserRepository userRepository) {
+    private final RedisService redisService;
+
+    public UserService(PasswordEncoder passwordEncoder,
+                       UserRepository userRepository,
+                       RedisService redisService) {
         this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
+        this.redisService = redisService;
     }
 
     public UserResponseDTO registerUser(UserRequestDTO userRequestDTO) {
@@ -36,5 +44,10 @@ public class UserService {
                 .build();
         userRepository.save(user);
         return userMapper.userToUserResponseDto(user);
+    }
+
+    public void logout() {
+        Object currentUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+        redisService.clearRedisByKey(REDIS_AUTHENTICATION_HEADER + currentUsername);
     }
 }

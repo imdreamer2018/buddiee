@@ -27,4 +27,9 @@ public class UserController {
     public UserResponseDTO registerUser(@RequestBody @Valid UserRequestDTO userRequestDTO) {
         return userService.registerUser(userRequestDTO);
     }
+
+    @PostMapping(value = "/logout")
+    public void logout() {
+        userService.logout();
+    }
 }
