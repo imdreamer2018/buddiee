@@ -15,6 +15,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collections;
 
+import static com.thoughtworks.buddiee.filter.JWTAuthenticationFilter.REDIS_AUTHENTICATION_HEADER;
+
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
     private final RedisService redisService;
@@ -39,7 +41,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
             return;
         }
         String username = JwtTokenUtils.getUsername(token);
-        String redisToken = (String) redisService.get("Authentication_" + username);
+        String redisToken = (String) redisService.get(REDIS_AUTHENTICATION_HEADER + username);
         // 如果请求头中没有Authorization信息则直接放行了
         if (redisToken.isEmpty() || !redisToken.equals(token)) {
             chain.doFilter(request, response);
