@@ -2,13 +2,12 @@ package com.thoughtworks.buddiee.serviceTests;
 
 import com.thoughtworks.buddiee.dto.UserRequestDTO;
 import com.thoughtworks.buddiee.dto.UserResponseDTO;
-import com.thoughtworks.buddiee.mapper.UserMapper;
 import com.thoughtworks.buddiee.repository.UserRepository;
+import com.thoughtworks.buddiee.service.RedisService;
 import com.thoughtworks.buddiee.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mapstruct.factory.Mappers;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -30,12 +29,13 @@ class UserServiceTest {
     @Mock
     private static PasswordEncoder passwordEncoder;
 
-    private final UserMapper userMapper = Mappers.getMapper(UserMapper.class);
+    @Mock
+    RedisService redisService;
 
     @BeforeEach
     void setUp() {
         initMocks(this);
-        userService = new UserService(passwordEncoder, userRepository);
+        userService = new UserService(passwordEncoder, userRepository, redisService);
     }
 
     @Test
