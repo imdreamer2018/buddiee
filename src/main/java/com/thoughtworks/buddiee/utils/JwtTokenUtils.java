@@ -3,7 +3,9 @@ package com.thoughtworks.buddiee.utils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.UnsupportedJwtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,16 +58,24 @@ public class JwtTokenUtils {
         return (String) getTokenBody(token).get(ROLE_CLAIMS);
     }
 
-    //是否已过期
-    public static boolean isExpiration(String token) {
+    public static boolean validateToken(String token) {
         try {
             Jwts.parser()
                     .setSigningKey(SECRET)
                     .parseClaimsJws(token)
                     .getBody()
                     .getSubject();
+        } catch (MalformedJwtException e) {
+            logger.error("JWT strings must contain exactly 2 period characters");
+            return true;
+        } catch (UnsupportedJwtException e) {
+            logger.error("Unsupported jwt token strings ");
+            return true;
         } catch (ExpiredJwtException e) {
             logger.error("token have been expiration");
+            return true;
+        } catch (Exception e) {
+            logger.error("unknown exception");
             return true;
         }
         return getTokenBody(token).getExpiration().before(new Date());

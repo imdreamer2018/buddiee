@@ -34,7 +34,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
             return;
         }
         String token = tokenHeader.replace(JwtTokenUtils.TOKEN_PREFIX, "");
-        if (JwtTokenUtils.isExpiration(token)) {
+        if (JwtTokenUtils.validateToken(token)) {
             chain.doFilter(request, response);
             return;
         }
